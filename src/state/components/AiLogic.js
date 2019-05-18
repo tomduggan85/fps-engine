@@ -178,9 +178,9 @@ class AiLogic {
       range //far
     )
 
-    const result = nearestRaycastGameObject( this.scene, raycast )
+    const { gameObject } = nearestRaycastGameObject( this.scene, raycast )
 
-    const canSeePlayer = result === this.player
+    const canSeePlayer = gameObject === this.player
 
 
     this.canSeePlayerCache = {

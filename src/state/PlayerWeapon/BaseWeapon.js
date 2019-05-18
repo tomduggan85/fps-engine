@@ -4,6 +4,7 @@ import { observable } from 'mobx'
 import UiAnimation from '../components/UiAnimation'
 import { nearestRaycastGameObject } from '../../shared/sceneUtils'
 import GameObjectTypes from '../../shared/enum/GameObjectTypes'
+import DamageParticles from '../DamageParticles'
 
 export default class BaseWeapon {
   
@@ -83,10 +84,21 @@ export default class BaseWeapon {
         spreadVector,
         this.camera.sceneObject
       )
-      const gameObject = nearestRaycastGameObject( this.scene, raycast, [ GameObjectTypes.Player ] )
+      const { gameObject, point } = nearestRaycastGameObject(
+        this.scene,
+        raycast,
+        [ GameObjectTypes.Player ], //Ignore player
+        true //Ignore dead enemies
+      )
       
-      if ( gameObject && gameObject.components.health ) {
-        gameObject.components.health.takeDamage( damage )
+      if ( gameObject ) {
+        if ( gameObject.components.health ) {
+          gameObject.components.health.takeDamage( damage )
+        }
+
+        this.gameState.addGameObject( DamageParticles, {
+          position: point
+        })
       }
     }
   }

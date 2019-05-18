@@ -34,6 +34,9 @@ class SpriteAnimation extends BaseAnimation {
   step() {
     super.step()
     const { name } = this.animationState
+    if ( !name ) {
+      throw new Error( 'Animation.step(): No animation set!' )
+    }
     
     const {
       isDirectional,

@@ -57,7 +57,7 @@ const animationDefs = {
 }
 
 const DAMAGE = 5
-const SPREAD = 0.07
+const SPREAD = 0.12
 const PELLETS = 6
 
 export default class Shotgun extends BaseWeapon {

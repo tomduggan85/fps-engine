@@ -4,4 +4,5 @@ export default {
   Enemy: 'Enemy',
   Scenery: 'Scenery',
   Light: 'Light',
+  Effect: 'Effect',
 }
