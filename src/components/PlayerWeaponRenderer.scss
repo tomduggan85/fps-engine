@@ -1,0 +1,15 @@
+.PlayerWeaponRenderer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -100%;
+  left: 0;
+
+  .WeaponImage {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform-origin: 50% bottom;
+    transform: scale(3.5);
+  }
+}

@@ -3,9 +3,10 @@
 import GameObject from './GameObject'
 import GameObjectTypes from '../shared/enum/GameObjectTypes'
 import { capMaxVelocity } from '../shared/physicsUtils'
-import { action } from 'mobx'
+import { action, observable, computed } from 'mobx'
 import Health from './components/Health'
 import { disableRotation } from '../shared/physicsUtils'
+import { WeaponTypes, WeaponIds } from '../shared/enum/WeaponTypes'
 
 const FRICTION = 1
 const RESTITUTION = 0
@@ -27,6 +28,12 @@ class Player extends GameObject {
   isStrafingLeft = false
   isStrafingRight = false
 
+  @observable
+  weapons = []
+
+  @observable
+  currentWeaponIndex = null
+
   constructor( props ) {
     super( props )
     
@@ -39,6 +46,8 @@ class Player extends GameObject {
       parent: this,
       startingHealth: 100
     }))
+
+    this.addWeapon( WeaponIds.MachineGun, 500 )
   }
 
   attachCamera() {
@@ -96,6 +105,10 @@ class Player extends GameObject {
     capMaxVelocity( this.sceneObject, MAX_VELOCITY )
     this.stepMovement()
 
+    if ( this.currentWeapon ) {
+      this.currentWeapon.step( deltaTime )
+    }
+
     super.step( deltaTime )
   }
 
@@ -123,22 +136,33 @@ class Player extends GameObject {
     this.sceneObject.applyCentralImpulse( impulseVector )
   }
 
-  @action
-  capMaxVelocity() {
+  addWeapon( weaponId, ammo ) {
+    const existingWeapon = this.weapons.find( weapon => weapon.weaponId === weaponId )
+    if ( existingWeapon ) {
+      existingWeapon.addAmmo( ammo )
+    }
+    else {
+      const WeaponType = WeaponTypes[ weaponId ]
+      this.weapons.push( new WeaponType({
+        player: this,
+        ammo
+      }))
+      this.equipWeapon( this.weapons.length - 1 )
+    }
+  }
 
-    /* 
-      Cap X and Z velocity, leave Y untouched (for gravity)
-      This assumes that the player's own controls are the only thing affecting the player's X and Z velocity
-    */
-    const currentVelocity = this.sceneObject.getLinearVelocity()
-    const capped = new THREE.Vector3( currentVelocity.x, 0, currentVelocity.z )
-    capped.clampLength( -MAX_VELOCITY, MAX_VELOCITY )
+  equipWeapon( weaponIndex ) {
+    if ( this.currentWeaponIndex === weaponIndex ) {
+      return
+    }
 
-    this.sceneObject.setLinearVelocity( new THREE.Vector3(
-      capped.x,
-      currentVelocity.y,
-      capped.z
-    ))
+    this.currentWeaponIndex = weaponIndex
+    this.currentWeapon.equip()
+  }
+
+  @computed
+  get currentWeapon() {
+    return this.weapons[this.currentWeaponIndex]
   }
 }
 

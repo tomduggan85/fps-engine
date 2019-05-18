@@ -2,7 +2,6 @@
 
 import { action } from 'mobx'
 import { nearestRaycastGameObject } from '../../shared/sceneUtils'
-import { capMaxVelocity } from '../../shared/physicsUtils'
 
 export const aiModes = {
   PATROLLING: 'PATROLLING',
@@ -283,7 +282,6 @@ class AiLogic {
     }
 
     if ( walkingaiModes.includes( name )) {
-      capMaxVelocity( this.parent.sceneObject, this.maxVelocity )
       this.parent.walkForward()
     }
 

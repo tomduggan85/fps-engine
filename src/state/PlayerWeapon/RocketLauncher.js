@@ -1,3 +1,4 @@
+import BaseWeapon from './BaseWeapon'
 
 const animationDefs = {
   default: {
@@ -49,4 +50,8 @@ const animationDefs = {
     loop: false,
     duration: 300
   },
+}
+
+export default class MachineGun extends BaseWeapon {
+
 }

@@ -1,3 +1,4 @@
+import BaseWeapon from './BaseWeapon'
 
 const animationDefs = {
   default: {
@@ -11,16 +12,16 @@ const animationDefs = {
     frames: [
       { u: 111, v: 206, width: 73, height: 84 },
       { u: 193, v: 206, width: 73, height: 84 },
-      { u: 701, v: 205, width: 96, height: 65, xOffset: 100 },
-      { u: 273, v: 157, width: 108, height: 123, xOffset: 150 },
-      { u: 396, v: 109, width: 134, height: 171, xOffset: 250 },
-      { u: 791, v: 181, width: 104, height: 109, xOffset: 250 },
-      { u: 542, v: 92, width: 156, height: 198, xOffset: 340 },
-      { u: 542, v: 92, width: 156, height: 198, xOffset: 340 },
-      { u: 791, v: 181, width: 104, height: 109, xOffset: 250 },
-      { u: 396, v: 109, width: 134, height: 171, xOffset: 250 },
-      { u: 273, v: 157, width: 108, height: 123, xOffset: 150 },
-      { u: 701, v: 205, width: 96, height: 65, xOffset: 100 },
+      { u: 701, v: 205, width: 96, height: 65, uShift: 100 },
+      { u: 273, v: 157, width: 108, height: 123, uShift: 150 },
+      { u: 396, v: 109, width: 134, height: 171, uShift: 250 },
+      { u: 791, v: 181, width: 104, height: 109, uShift: 250 },
+      { u: 542, v: 92, width: 156, height: 198, uShift: 340 },
+      { u: 542, v: 92, width: 156, height: 198, uShift: 340 },
+      { u: 791, v: 181, width: 104, height: 109, uShift: 250 },
+      { u: 396, v: 109, width: 134, height: 171, uShift: 250 },
+      { u: 273, v: 157, width: 108, height: 123, uShift: 150 },
+      { u: 701, v: 205, width: 96, height: 65, uShift: 100 },
     ],
     duration: 800,
     loop: false,
@@ -53,4 +54,8 @@ const animationDefs = {
     loop: false,
     duration: 300
   },
+}
+
+export default class MachineGun extends BaseWeapon {
+
 }

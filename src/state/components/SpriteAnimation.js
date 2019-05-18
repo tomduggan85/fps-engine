@@ -1,20 +1,15 @@
 /* global THREE */
 
-import { action, observable } from 'mobx'
+import BaseAnimation from './BaseAnimation'
+import { action } from 'mobx'
 
 const ANIMATION_DIRECTIONS = 8
 
-class SpriteAnimation {
-
-  componentType = 'animation'
-
-  @observable
-  animationState = null
+class SpriteAnimation extends BaseAnimation {
 
   constructor( props ) {
-    this.parent = props.parent
+    super( props )
     this.camera = props.camera
-    this.animationDefs = props.animationDefs
     this.texture = props.texture
   }
 
@@ -34,44 +29,24 @@ class SpriteAnimation {
     return angle
   }
 
-  @action
-  setAnimation( animationName ) {
-    if ( !this.animationState || animationName !== this.animationState.name ) {
-      this.animationState = {
-        name: animationName,
-        startTime: performance.now()
-      }
-
-      this.step()
-    }
-  }
   
   @action
   step() {
-    const {
-      name,
-      startTime,
-    } = this.animationState
+    super.step()
+    const { name } = this.animationState
     
     const {
-      frames,
-      duration,
       isDirectional,
       directionalOffset,
     } = this.animationDefs[ name ]
     
-    const now = performance.now()
-    const frameIndex = Math.floor(( now - startTime ) % duration / duration * frames.length )
-
-    const frame = frames[ frameIndex ]
     let columnOffset = 0
-
     if ( isDirectional ) {
       const column = Math.floor((( this.getAngleToCamera() / 360 ) * ANIMATION_DIRECTIONS ))
       columnOffset = column * directionalOffset
     }
     
-    this.texture.offset.set( frame.u + columnOffset, frame.v )
+    this.texture.offset.set( this.u + columnOffset, this.v )
   }
 
 }
