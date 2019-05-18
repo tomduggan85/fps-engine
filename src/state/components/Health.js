@@ -27,6 +27,15 @@ class Health {
       this.currentHealth = Math.max( 0, this.currentHealth - damageAmount )
       this.isTakingDamage = true
       this.takingDamageTimeout = setTimeout( this.finishTakingDamage, TAKING_DAMAGE_DURATION )
+
+      if ( this.parent.components.aiLogic ) {
+        if ( this.currentHealth > 0 ) {
+          this.parent.components.aiLogic.onTakeDamage()
+        }
+        else {
+          this.parent.components.aiLogic.onDeath()
+        }
+      }
     }
   }
 

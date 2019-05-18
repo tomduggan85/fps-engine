@@ -46,13 +46,25 @@ const animationDefs = {
   },
 }
 
+const DAMAGE = 5
+const SPREAD = 0.1
+
 export default class MachineGun extends BaseWeapon {
 
   constructor( props ) {
     super({
       ...props,
       animationDefs,
-      imageUrl: '/assets/images/machine_gun.png'
+      imageUrl: '/assets/images/machine_gun.png',
+      alertNearbyEnemyRange: 60,
     })
+  }
+
+  performAttack() {
+    this.fireBullet(
+      1,
+      DAMAGE,
+      SPREAD
+    )
   }
 }

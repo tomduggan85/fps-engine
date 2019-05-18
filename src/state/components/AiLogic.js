@@ -263,7 +263,7 @@ class AiLogic {
 
     ) {
       this.removedFromWorld = true
-      this.parent.sceneObject.removeFromPhysicsWorld()
+      this.parent.sceneObject.stopPhysicsSimulation()
     }
   }
 

@@ -56,6 +56,9 @@ const animationDefs = {
   },
 }
 
+const DAMAGE = 5
+const SPREAD = 0.07
+const PELLETS = 6
 
 export default class Shotgun extends BaseWeapon {
 
@@ -63,7 +66,16 @@ export default class Shotgun extends BaseWeapon {
     super({
       ...props,
       animationDefs,
-      imageUrl: '/assets/images/shotgun.png'
+      imageUrl: '/assets/images/shotgun.png',
+      alertNearbyEnemyRange: 60,
     })
+  }
+
+  performAttack() {
+    this.fireBullet(
+      PELLETS,
+      DAMAGE,
+      SPREAD
+    )
   }
 }

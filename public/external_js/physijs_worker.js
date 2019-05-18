@@ -618,6 +618,10 @@ public_functions.onSimulationResume = function( params ) {
 	last_simulation_time = Date.now();
 };
 
+public_functions.stopPhysicsSimulation = function ( details ) {
+	world.removeRigidBody( _objects[details.id] );
+};
+
 public_functions.setAngularVelocity = function ( details ) {
 
 	_vec3_1.setX(details.x);

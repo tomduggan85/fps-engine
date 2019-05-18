@@ -59,7 +59,12 @@ export default class RocketLauncher extends BaseWeapon {
     super({
       ...props,
       animationDefs,
-      imageUrl: '/assets/images/rocket_launcher.png'
+      imageUrl: '/assets/images/rocket_launcher.png',
+      alertNearbyEnemyRange: 80,
     })
+  }
+
+  performAttack() {
+    this.fireProjectile() //todo
   }
 }

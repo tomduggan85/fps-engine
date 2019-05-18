@@ -1,5 +1,9 @@
+/* global THREE */
+
 import { observable } from 'mobx'
 import UiAnimation from '../components/UiAnimation'
+import { nearestRaycastGameObject } from '../../shared/sceneUtils'
+import GameObjectTypes from '../../shared/enum/GameObjectTypes'
 
 export default class BaseWeapon {
   
@@ -16,6 +20,12 @@ export default class BaseWeapon {
     this.imageUrl = props.imageUrl
     this.animationDefs = props.animationDefs
     this.ammo = props.ammo
+    this.player = props.player
+    this.camera = props.player.camera
+    this.gameState = props.player.gameState
+    this.scene = props.player.scene
+    this.alertNearbyEnemyRange = props.alertNearbyEnemyRange
+
     this.animation = new UiAnimation({
       animationDefs: props.animationDefs, 
     })
@@ -50,9 +60,46 @@ export default class BaseWeapon {
       this.canAttack = false
       this.animation.setAnimation( 'attack' )
       this.ammo -= 1
+      this.performAttack()
+      this.alertNearbyEnemies()
 
       const attackTime = this.animationDefs.attack.duration
       setTimeout( this.enableAttacking, attackTime )
     }
+  }
+
+  performAttack() {
+    throw new Error('Implement in child class')
+  }
+
+  fireBullet( count, damage, spread = 0 ) {
+    for ( let i = 0; i < count; i++ ) {
+      const raycast = new THREE.Raycaster()
+      const spreadVector = new THREE.Vector2(
+        -spread/2 + Math.random() * spread,
+        -spread/2 + Math.random() * spread/2,
+      )
+      raycast.setFromCamera(
+        spreadVector,
+        this.camera.sceneObject
+      )
+      const gameObject = nearestRaycastGameObject( this.scene, raycast, [ GameObjectTypes.Player ] )
+      
+      if ( gameObject && gameObject.components.health ) {
+        gameObject.components.health.takeDamage( damage )
+      }
+    }
+  }
+
+  alertNearbyEnemies() {
+    this.gameState.getGameObjectsInRange( this.player.sceneObject.position, this.alertNearbyEnemyRange ).forEach( gameObject => {
+      if ( gameObject.type === GameObjectTypes.Enemy ) {
+        gameObject.components.aiLogic.noticePlayer()
+      }
+    })
+  }
+
+  fireProjectile() {
+
   }
 }

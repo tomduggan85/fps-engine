@@ -5,6 +5,7 @@ import GameObjectTypes from '../shared/enum/GameObjectTypes'
 import { action } from 'mobx'
 import { capMaxVelocity } from '../shared/physicsUtils'
 import AiLogic from './components/AiLogic'
+import Health from './components/Health'
 import SpriteAnimation from './components/SpriteAnimation'
 import { disableRotation } from '../shared/physicsUtils'
 
@@ -48,6 +49,11 @@ class Enemy extends GameObject {
       radius: this.radius,
       eyeHeight: this.radius * 0.75,
       attackRate: this.animationDefs.attack.duration
+    }))
+
+    this.addComponent( new Health({
+      parent: this,
+      startingHealth: props.startingHealth
     }))
   }
 

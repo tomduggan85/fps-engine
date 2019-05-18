@@ -1117,6 +1117,13 @@ window.Physijs = (function() {
 		}
 	};
 
+	// Physijs.Mesh.stopPhysicsSimulation
+	Physijs.Mesh.prototype.stopPhysicsSimulation = function () {
+		if ( this.world ) {
+			this.world.execute( 'stopPhysicsSimulation', { id: this._physijs.id } );
+		}
+	};
+
 	// Physijs.Mesh.getAngularVelocity
 	Physijs.Mesh.prototype.getAngularVelocity = function () {
 		return this._physijs.angularVelocity;

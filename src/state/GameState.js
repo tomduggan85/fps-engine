@@ -221,6 +221,13 @@ class GameState {
     })
     this.gameObjectsToRemove = []
   }
+
+  getGameObjectsInRange( position, range ) {
+    const rangeSquared = range * range
+    return this.gameObjects.filter( gameObject => {
+      return gameObject.sceneObject.position.distanceToSquared( position ) <= rangeSquared
+    })
+  }
 }
 
 export default GameState

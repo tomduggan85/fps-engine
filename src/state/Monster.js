@@ -77,7 +77,8 @@ class Monster extends Enemy {
       textureUrl: '/assets/sprites/monster.png',
       textureScale: [ 0.081, 0.067 ],
       maxVelocity: 3,
-      radius: 1.75
+      radius: 1.75,
+      startingHealth: 20,
     })
   }
 
