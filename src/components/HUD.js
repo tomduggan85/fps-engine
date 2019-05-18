@@ -23,7 +23,8 @@ class HUD extends React.Component {
         <div className={classnames('overlay damage-overlay', { isActive: isTakingDamage })} />
         <div className='bottom-ui'>
           {currentWeapon && <PlayerWeaponRenderer weapon={currentWeapon} />}
-          <div className='health'>Health: {currentHealth}</div>
+          <div className='stat'>Health: {currentHealth}</div>
+          {currentWeapon && <div className='stat'>Ammo: {currentWeapon.ammo}</div>}
         </div>
         <div className={classnames('overlay dead-overlay', { isActive: isDead })} />
       </div>

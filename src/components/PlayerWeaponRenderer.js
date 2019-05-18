@@ -24,7 +24,7 @@ class PlayerWeaponRenderer extends React.Component {
             backgroundImage: `url(${ imageUrl })`,
             width: `${ width }px`,
             height: `${ height }px`,
-            marginLeft: `${ -width/2 - uShift }px`,
+            marginLeft: `${ -width/2 + uShift }px`,
             backgroundPosition: `${ -u }px ${ -v }px`
           }}
         />

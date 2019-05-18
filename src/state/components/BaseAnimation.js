@@ -67,6 +67,7 @@ class BaseAnimation {
     this.v = frame.v
     this.width = frame.width
     this.height = frame.height
+    this.uShift = frame.uShift || 0
   }
 }
 

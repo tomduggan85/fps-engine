@@ -52,6 +52,14 @@ const animationDefs = {
   },
 }
 
-export default class MachineGun extends BaseWeapon {
 
+export default class RocketLauncher extends BaseWeapon {
+
+  constructor( props ) {
+    super({
+      ...props,
+      animationDefs,
+      imageUrl: '/assets/images/rocket_launcher.png'
+    })
+  }
 }

@@ -15,6 +15,7 @@ export default class BaseWeapon {
   constructor( props ) {
     this.imageUrl = props.imageUrl
     this.animationDefs = props.animationDefs
+    this.ammo = props.ammo
     this.animation = new UiAnimation({
       animationDefs: props.animationDefs, 
     })
@@ -29,7 +30,10 @@ export default class BaseWeapon {
 
   putAway() {
     this.canAttack = false
-    this.animation.setAnimation( 'putAway' )
+    this.animation.setAnimation( 'put_away' )
+    return new Promise(( resolve, reject ) => {
+      setTimeout( resolve, this.animationDefs.put_away.duration )
+    })
   }
 
   step( deltaTime ) {
@@ -45,8 +49,9 @@ export default class BaseWeapon {
     if ( this.canAttack && this.ammo ) {
       this.canAttack = false
       this.animation.setAnimation( 'attack' )
-      const attackTime = this.animationDefs.attack.duration
+      this.ammo -= 1
 
+      const attackTime = this.animationDefs.attack.duration
       setTimeout( this.enableAttacking, attackTime )
     }
   }

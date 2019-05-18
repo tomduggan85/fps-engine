@@ -27,6 +27,7 @@ class Player extends GameObject {
   isGoingBackwards = false
   isStrafingLeft = false
   isStrafingRight = false
+  isAttacking = false
 
   @observable
   weapons = []
@@ -48,6 +49,9 @@ class Player extends GameObject {
     }))
 
     this.addWeapon( WeaponIds.MachineGun, 500 )
+    this.addWeapon( WeaponIds.Shotgun, 500 )
+    this.addWeapon( WeaponIds.RocketLauncher, 500 )
+    
   }
 
   attachCamera() {
@@ -99,6 +103,9 @@ class Player extends GameObject {
 
   onStrafeRight = () => this.isStrafingRight = true
   offStrafeRight = () => this.isStrafingRight = false
+
+  onAttack = () => this.isAttacking = true
+  offAttack = () => this.isAttacking = false
  
   @action
   step( deltaTime ) {
@@ -106,6 +113,9 @@ class Player extends GameObject {
     this.stepMovement()
 
     if ( this.currentWeapon ) {
+      if ( this.isAttacking ) {
+        this.currentWeapon.attack()
+      }
       this.currentWeapon.step( deltaTime )
     }
 
@@ -147,13 +157,19 @@ class Player extends GameObject {
         player: this,
         ammo
       }))
-      this.equipWeapon( this.weapons.length - 1 )
+      if ( !this.currentWeaponIndex ) {
+        this.equipWeapon( 0 )
+      }
     }
   }
 
-  equipWeapon( weaponIndex ) {
-    if ( this.currentWeaponIndex === weaponIndex ) {
+  async equipWeapon( weaponIndex ) {
+    if ( this.currentWeaponIndex === weaponIndex || !this.weapons[ weaponIndex ]) {
       return
+    }
+
+    if ( this.currentWeapon ) {
+      await this.currentWeapon.putAway()
     }
 
     this.currentWeaponIndex = weaponIndex

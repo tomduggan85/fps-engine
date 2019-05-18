@@ -25,24 +25,48 @@ class PlayerInputArea extends React.Component {
     const { camera, player } = this.props
     
     switch( e.keyCode ) {
+      case controls.attack:
+        player.onAttack()
+        break
+
       case controls.up:
         player.onForward()
-        e.preventDefault()
         break
 
       case controls.down:
         player.onBackwards()
-        e.preventDefault()
         break
 
       case controls.left:
         pointerLocked ? player.onStrafeLeft() : camera.onTurnLeft()
-        e.preventDefault()
         break
 
       case controls.right:
         pointerLocked ? player.onStrafeRight() : camera.onTurnRight()
-        e.preventDefault()
+        break
+
+      case controls.equipWeapon1:
+        player.equipWeapon( 0 )
+        break
+
+      case controls.equipWeapon2:
+        player.equipWeapon( 1 )
+        break
+
+      case controls.equipWeapon3:
+        player.equipWeapon( 2 )
+        break
+
+      case controls.equipWeapon4:
+        player.equipWeapon( 3 )
+        break
+
+      case controls.equipWeapon5:
+        player.equipWeapon( 4 )
+        break
+
+      case controls.equipWeapon6:
+        player.equipWeapon( 5 )
         break
 
       default:
@@ -55,24 +79,24 @@ class PlayerInputArea extends React.Component {
     const { camera, player } = this.props
 
     switch( e.keyCode ) {
+      case controls.attack:
+        player.offAttack()
+        break
+
       case controls.up:
         player.offForward()
-        e.preventDefault()
         break
 
       case controls.down:
         player.offBackwards()
-        e.preventDefault()
         break
 
       case controls.left:
         pointerLocked ? player.offStrafeLeft() : camera.offTurnLeft()
-        e.preventDefault()
         break
 
       case controls.right:
         pointerLocked ? player.offStrafeRight() : camera.offTurnRight()
-        e.preventDefault()
         break
 
       default:
@@ -81,8 +105,10 @@ class PlayerInputArea extends React.Component {
   }
 
   onPointerLockChange = () => {
+    const { player } = this.props
     if( document.pointerLockElement !== this.$el ) {
       this.setState({ pointerLocked: false })
+      player.offAttack()
     }
   }
 
@@ -97,6 +123,14 @@ class PlayerInputArea extends React.Component {
     }
   }
 
+  onMouseAttack = () => {
+    this.props.player.onAttack()
+  }
+
+  offMouseAttack = () => {
+    this.props.player.offAttack()
+  }
+
   render() {
     const { pointerLocked } = this.state
     return (
@@ -105,6 +139,8 @@ class PlayerInputArea extends React.Component {
         className='PlayerInputArea'
         onMouseMove={pointerLocked ? this.onMouseMove : undefined}
         onClick={this.onClick}
+        onMouseDown={pointerLocked ? this.onMouseAttack : undefined}
+        onMouseUp={pointerLocked ? this.offMouseAttack : undefined}
       />
     )
   }
