@@ -1,0 +1,13 @@
+
+body {
+  background: #000;
+}
+
+.App {
+  display: block;
+  margin: 0 auto;
+  width: 80vw;
+  height: 100vh;
+  max-width: 1400px;
+  max-height: 800px;
+}

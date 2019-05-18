@@ -1,0 +1,49 @@
+.HUD {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+
+  .bottom-ui {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 60px;
+    background: #222;
+    color: #fff;
+    padding: 20px 40px;
+    box-sizing: border-box;
+
+    .health {
+      font-size: 20px;
+    }
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    
+    transition: opacity 0.3s;
+
+    &.isActive {
+      opacity: 1;
+    }
+  }
+
+  .damage-overlay {
+    background: rgba(#f00, 0.5);
+    transition-duration: 0.3s;
+  }
+
+  .dead-overlay {
+    background: rgba(#000, 0.8);
+    transition-duration: 0.8s;
+  }
+}
