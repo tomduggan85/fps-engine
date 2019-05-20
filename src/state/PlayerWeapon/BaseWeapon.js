@@ -4,7 +4,10 @@ import { observable } from 'mobx'
 import UiAnimation from '../components/UiAnimation'
 import { nearestRaycastGameObject } from '../../shared/sceneUtils'
 import GameObjectTypes from '../../shared/enum/GameObjectTypes'
-import DamageParticles from '../DamageParticles'
+import DamageParticles, { EffectTypes } from '../DamageParticles'
+
+const CAMERA_AIM_Y_OFFSET = 0.08;
+const CAMERA_Y_SPREAD_MULTIPLIER = 1.8; // Account for the fact that the viewport is wider than it is tall
 
 export default class BaseWeapon {
   
@@ -78,7 +81,7 @@ export default class BaseWeapon {
       const raycast = new THREE.Raycaster()
       const spreadVector = new THREE.Vector2(
         -spread/2 + Math.random() * spread,
-        -spread/2 + Math.random() * spread/2,
+        (-spread/2 + Math.random() * spread/2 + CAMERA_AIM_Y_OFFSET) * CAMERA_Y_SPREAD_MULTIPLIER,
       )
       raycast.setFromCamera(
         spreadVector,
@@ -96,8 +99,12 @@ export default class BaseWeapon {
           gameObject.components.health.takeDamage( damage )
         }
 
+        const shiftedImpactPoint = point.clone().sub( this.player.sceneObject.position ).normalize()
+        const effectType = gameObject.type === GameObjectTypes.Enemy ? EffectTypes.EnemyHit : EffectTypes.Sparks
+
         this.gameState.addGameObject( DamageParticles, {
-          position: point
+          position: point.sub( shiftedImpactPoint ),
+          effectType,
         })
       }
     }

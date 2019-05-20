@@ -47,7 +47,7 @@ const animationDefs = {
 }
 
 const DAMAGE = 5
-const SPREAD = 0.1
+const SPREAD = 0.2
 
 export default class MachineGun extends BaseWeapon {
 
