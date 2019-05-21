@@ -646,6 +646,18 @@ public_functions.setLinearVelocity = function ( details ) {
 	_objects[details.id].activate();
 };
 
+public_functions.disableGravity = function ( details ) {
+
+	_vec3_1.setX(0);
+	_vec3_1.setY(0);
+	_vec3_1.setZ(0);
+
+	_objects[details.id].setGravity(
+		_vec3_1
+	);
+	_objects[details.id].activate();
+};
+
 public_functions.setAngularFactor = function ( details ) {
 
 	_vec3_1.setX(details.x);

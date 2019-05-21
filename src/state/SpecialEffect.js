@@ -8,6 +8,7 @@ export const EffectTypes = {
   EnemyHit: 'EnemyHit',
   EnemyHit2: 'EnemyHit2',
   Sparks: 'Sparks',
+  LargeExplosion: 'LargeExplosion'
 }
 
 const SPARK_OFFSET = 0.081
@@ -87,10 +88,31 @@ const effectDefs = {
         loop: false,
       },
     },
+  },
+  [ EffectTypes.LargeExplosion ]: {
+    textureUrl: '/assets/sprites/large_explosion.png',
+    textureScale: [ 1/8, 1 ],
+    size: 10,
+    randomRotation: false,
+    animationDefs: {
+      default: {
+        frames: [
+          { u: 0, v: 0 },
+          { u: 1/8, v: 0 },
+          { u: 2/8, v: 0 },
+          { u: 3/8, v: 0 },
+          { u: 4/8, v: 0 },
+          { u: 5/8, v: 0 },
+          { u: 6/8, v: 0 },
+        ],
+        duration: 500,
+        loop: false,
+      },
+    },
   }
 }
 
-class DamageParticles extends GameObject {
+class SpecialEffect extends GameObject {
 
   type = GameObjectTypes.Effect
 
@@ -135,4 +157,4 @@ class DamageParticles extends GameObject {
   }
 }
 
-export default DamageParticles
+export default SpecialEffect

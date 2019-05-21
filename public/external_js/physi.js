@@ -1148,6 +1148,13 @@ window.Physijs = (function() {
 		}
 	};
 
+	// Physijs.Mesh.disableGravity
+	Physijs.Mesh.prototype.disableGravity = function () {
+		if ( this.world ) {
+			this.world.execute( 'disableGravity', { id: this._physijs.id } );
+		}
+	};
+
 	// Physijs.Mesh.setAngularFactor
 	Physijs.Mesh.prototype.setAngularFactor = function ( factor ) {
 		if ( this.world ) {

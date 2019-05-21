@@ -4,7 +4,7 @@ import { observable } from 'mobx'
 import UiAnimation from '../components/UiAnimation'
 import { nearestRaycastGameObject } from '../../shared/sceneUtils'
 import GameObjectTypes from '../../shared/enum/GameObjectTypes'
-import DamageParticles, { EffectTypes } from '../DamageParticles'
+import SpecialEffect, { EffectTypes } from '../SpecialEffect'
 
 const CAMERA_AIM_Y_OFFSET = 0.08;
 const CAMERA_Y_SPREAD_MULTIPLIER = 1.8; // Account for the fact that the viewport is wider than it is tall
@@ -102,7 +102,7 @@ export default class BaseWeapon {
         const shiftedImpactPoint = point.clone().sub( this.player.sceneObject.position ).normalize()
         const effectType = gameObject.type === GameObjectTypes.Enemy ? EffectTypes.EnemyHit : EffectTypes.Sparks
 
-        this.gameState.addGameObject( DamageParticles, {
+        this.gameState.addGameObject( SpecialEffect, {
           position: point.sub( shiftedImpactPoint ),
           effectType,
         })
@@ -118,7 +118,21 @@ export default class BaseWeapon {
     })
   }
 
-  fireProjectile() {
+  fireProjectile( projectileType ) {
+    const projectileHeightOffset = 0.1
+    const projectileSafeStartingDistance = 2
 
+    const direction = new THREE.Vector3()
+    this.camera.sceneObject.getWorldPosition( direction )
+    direction.sub( this.camera.sceneObject.localToWorld( new THREE.Vector3( 0, 0, 1 )))
+
+    const position = this.player.sceneObject.position.clone()
+    position.y += projectileHeightOffset
+    position.add( direction.clone().multiplyScalar(projectileSafeStartingDistance ))
+
+    this.gameState.addGameObject( projectileType, {
+      position,
+      direction,
+    })
   }
 }

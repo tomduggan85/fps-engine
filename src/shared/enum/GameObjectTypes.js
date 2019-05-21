@@ -5,4 +5,5 @@ export default {
   Scenery: 'Scenery',
   Light: 'Light',
   Effect: 'Effect',
+  Projectile: 'Projectile',
 }

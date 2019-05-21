@@ -1,4 +1,5 @@
 import BaseWeapon from './BaseWeapon'
+import Rocket from '../Projectile/Rocket'
 
 const animationDefs = {
   default: {
@@ -65,6 +66,6 @@ export default class RocketLauncher extends BaseWeapon {
   }
 
   performAttack() {
-    this.fireProjectile() //todo
+    this.fireProjectile( Rocket )
   }
 }
