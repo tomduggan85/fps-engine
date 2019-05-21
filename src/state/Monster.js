@@ -78,7 +78,7 @@ class Monster extends Enemy {
       textureScale: [ 0.081, 0.067 ],
       maxVelocity: 3,
       radius: 1.75,
-      startingHealth: 20,
+      startingHealth: 30,
     })
   }
 

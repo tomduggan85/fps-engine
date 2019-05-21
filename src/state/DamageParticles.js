@@ -6,29 +6,63 @@ import SpriteAnimation from './components/SpriteAnimation'
 
 export const EffectTypes = {
   EnemyHit: 'EnemyHit',
+  EnemyHit2: 'EnemyHit2',
   Sparks: 'Sparks',
 }
 
 const SPARK_OFFSET = 0.081
+const ENEMY_HIT_OFFSET = 0.066
 
 const effectDefs = {
   [ EffectTypes.EnemyHit ]: {
-    textureUrl: '/assets/sprites/monster.png',
-    textureScale: [ 0.081, 0.067 ],
-    size: 1,
+    textureUrl: '/assets/sprites/enemy_hit.png',
+    textureScale: [ 1/15, 1 ],
+    size: 1.25,
+    randomRotation: false,
     animationDefs: {
       default: {
         frames: [
-          { u: 0.015, v: 0.002 },
-          { u: 0.138, v: 0.002 },
-          { u: 0.259, v: 0.002 },
-          { u: 0.389, v: 0.002 },
-          { u: 0.521, v: 0.002 },
-          { u: 0.652, v: 0.002 },
-          { u: 0.784, v: 0.002 },
-          { u: 0.915, v: 0.002 },
+          { u: 0, v: 0 },
+          { u: 1 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 2 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 3 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 4 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 5 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 6 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 7 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 8 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 9 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 10 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 11 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 12 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 13 * ENEMY_HIT_OFFSET, v: 0 },
         ],
         duration: 500,
+        loop: false,
+      },
+    },
+  },
+  [ EffectTypes.EnemyHit2 ]: {
+    textureUrl: '/assets/sprites/enemy_hit_2.png',
+    textureScale: [ 1/15, 1 ],
+    size: 1.25,
+    randomRotation: true,
+    animationDefs: {
+      default: {
+        frames: [
+          { u: 0, v: 0 },
+          { u: 1 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 2 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 3 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 4 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 5 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 6 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 7 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 8 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 9 * ENEMY_HIT_OFFSET, v: 0 },
+          { u: 10 * ENEMY_HIT_OFFSET, v: 0 },
+        ],
+        duration: 300,
         loop: false,
       },
     },
@@ -37,6 +71,7 @@ const effectDefs = {
     textureUrl: '/assets/sprites/sparks_effect.png',
     textureScale: [ 1, 1/12 ],
     size: 1.5,
+    randomRotation: true,
     animationDefs: {
       default: {
         frames: [
@@ -89,7 +124,7 @@ class DamageParticles extends GameObject {
     this.texture.repeat.set( effectDef.textureScale[ 0 ], effectDef.textureScale[ 1 ])
     const spriteMaterial = new THREE.SpriteMaterial({
       map: this.texture,
-      rotation:  Math.random() * Math.PI * 2,
+      rotation:  effectDef.randomRotation ? ( Math.random() * Math.PI * 2 ) : 0,
     })
     const sceneObject = new THREE.Sprite( spriteMaterial )
     
