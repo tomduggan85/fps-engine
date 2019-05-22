@@ -495,6 +495,9 @@ public_functions.applyEngineForce = function( details ) {
 };
 
 public_functions.removeObject = function( details ) {
+	if (!_objects[details.id]) {
+		return
+	}
 	world.removeRigidBody( _objects[details.id] );
 	Ammo.destroy(_objects[details.id]);
 	Ammo.destroy(_motion_states[details.id]);

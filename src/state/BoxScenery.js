@@ -19,7 +19,8 @@ class BoxScenery extends GameObject {
       position,
       rotation,
       textureRepeat = [ 1, 1 ],
-      friction
+      friction,
+      mass = 0
     } = this.props
     
     const texture = new THREE.TextureLoader().load( textureUrl )
@@ -40,7 +41,7 @@ class BoxScenery extends GameObject {
     const box = new Physijs.BoxMesh(
       new THREE.BoxGeometry( size.x, size.y, size.z ),
       material,
-      0 //Zero mass means immovable object
+      mass //Zero mass means immovable object
     );
     box.position.set( position.x, position.y, position.z )
     if ( rotation ) {

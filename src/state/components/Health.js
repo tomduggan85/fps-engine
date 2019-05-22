@@ -5,6 +5,7 @@ import {
 } from 'mobx'
 
 const TAKING_DAMAGE_DURATION = 100
+const EXPLODE_THRESHOLD = 55
 
 class Health {
 
@@ -33,7 +34,7 @@ class Health {
           this.parent.components.aiLogic.onTakeDamage()
         }
         else {
-          this.parent.components.aiLogic.onDeath()
+          this.parent.components.aiLogic.onDeath( damageAmount > EXPLODE_THRESHOLD )
         }
       }
     }

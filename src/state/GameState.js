@@ -146,6 +146,52 @@ class GameState {
       friction: 0.1
     })
 
+    //boxes
+    this.addGameObject( BoxScenery, {
+      position: { x: 0, y: 2, z: -20 },
+      size: { x: 2, y: 2, z: 2 },
+      textureUrl: '/assets/textures/wood floor 2.png',
+      textureRepeat: [ 1, 1 ],
+      friction: 0.5,
+      mass: 25,
+    })
+
+    this.addGameObject( BoxScenery, {
+      position: { x: 0, y: 4, z: -20 },
+      size: { x: 2, y: 2, z: 2 },
+      textureUrl: '/assets/textures/wood floor 2.png',
+      textureRepeat: [ 1, 1 ],
+      friction: 0.8,
+      mass: 25,
+    })
+
+    this.addGameObject( BoxScenery, {
+      position: { x: -2, y: 2, z: -20 },
+      size: { x: 2, y: 2, z: 2 },
+      textureUrl: '/assets/textures/wood floor 2.png',
+      textureRepeat: [ 1, 1 ],
+      friction: 0.8,
+      mass: 25,
+    })
+
+    this.addGameObject( BoxScenery, {
+      position: { x: -2, y: 4, z: -20 },
+      size: { x: 2, y: 2, z: 2 },
+      textureUrl: '/assets/textures/wood floor 2.png',
+      textureRepeat: [ 1, 1 ],
+      friction: 0.8,
+      mass: 25,
+    })
+
+    this.addGameObject( BoxScenery, {
+      position: { x: -2, y: 6, z: -20 },
+      size: { x: 2, y: 2, z: 2 },
+      textureUrl: '/assets/textures/wood floor 2.png',
+      textureRepeat: [ 1, 1 ],
+      friction: 0.8,
+      mass: 25,
+    })
+
     //enemies
     this.addGameObject( Soldier, {
       position: { x: 0, y: 2.25, z: -45 },
@@ -155,7 +201,7 @@ class GameState {
     })
 
     this.addGameObject( Monster, {
-      position: { x: 0, y: 2.25, z: -8 },
+      position: { x: 0, y: 2.25, z: -28 },
       patrol: false
     })
 
@@ -224,9 +270,13 @@ class GameState {
 
   getGameObjectsInRange( position, range ) {
     const rangeSquared = range * range
-    return this.gameObjects.filter( gameObject => {
-      return gameObject.sceneObject.position.distanceToSquared( position ) <= rangeSquared
-    })
+    return this.gameObjects.reduce(( results, gameObject ) => {
+      const distSq = gameObject.sceneObject.position.distanceToSquared( position )
+      if ( distSq <= rangeSquared ) {
+        results.push({ gameObject, distance: Math.sqrt( distSq )})
+      }
+      return results
+    }, [])
   }
 }
 

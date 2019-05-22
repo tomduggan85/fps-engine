@@ -9,7 +9,7 @@ import Health from './components/Health'
 import SpriteAnimation from './components/SpriteAnimation'
 import { disableRotation } from '../shared/physicsUtils'
 
-const FRICTION = 3
+const FRICTION = 1
 const RESTITUTION = 0
 const SHOW_DEBUG_VOLUMES = false
 

@@ -111,7 +111,7 @@ export default class BaseWeapon {
   }
 
   alertNearbyEnemies() {
-    this.gameState.getGameObjectsInRange( this.player.sceneObject.position, this.alertNearbyEnemyRange ).forEach( gameObject => {
+    this.gameState.getGameObjectsInRange( this.player.sceneObject.position, this.alertNearbyEnemyRange ).forEach(({ gameObject }) => {
       if ( gameObject.type === GameObjectTypes.Enemy ) {
         gameObject.components.aiLogic.noticePlayer()
       }

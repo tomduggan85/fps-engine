@@ -48,9 +48,9 @@ class Player extends GameObject {
       startingHealth: 100
     }))
 
-    this.addWeapon( WeaponIds.RocketLauncher, 500 )
     this.addWeapon( WeaponIds.MachineGun, 500 )
     this.addWeapon( WeaponIds.Shotgun, 500 )
+    this.addWeapon( WeaponIds.RocketLauncher, 500 )
   }
 
   attachCamera() {

@@ -1,5 +1,7 @@
 import Enemy from './Enemy'
+import Fireball from './Projectile/Fireball'
 
+const ATTACK_DELAY = 300
 
 const animationDefs = {
   walk: {
@@ -83,7 +85,18 @@ class Monster extends Enemy {
   }
 
   doAttack = () => {
-    //todo
+    setTimeout(() => {
+      if ( this.components.aiLogic.isAttacking()) {
+        const fireballStartOffset = 3
+        const position = this.sceneObject.position.clone()
+        position.add( this.direction.multiplyScalar( fireballStartOffset ))
+
+        this.gameState.addGameObject( Fireball, {
+          position,
+          direction: this.direction.clone()
+        })
+      }
+    }, ATTACK_DELAY )
   }
 }
 

@@ -67,8 +67,11 @@ class BaseProjectile extends GameObject {
   }
 
   onCollision( otherObject, velocity, angularVelocity, normal, contactPoints, impulse ) {
-    this.handleCollision( otherObject, velocity, angularVelocity )
-    this.remove()
+    if ( !this.collided ) {
+      this.handleCollision( otherObject, velocity, angularVelocity )
+      this.remove()
+      this.collided = true
+    }
   }
 }
 

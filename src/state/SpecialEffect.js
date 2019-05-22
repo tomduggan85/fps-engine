@@ -8,7 +8,8 @@ export const EffectTypes = {
   EnemyHit: 'EnemyHit',
   EnemyHit2: 'EnemyHit2',
   Sparks: 'Sparks',
-  LargeExplosion: 'LargeExplosion'
+  LargeExplosion: 'LargeExplosion',
+  FireballImpact: 'FireballImpact',
 }
 
 const SPARK_OFFSET = 0.081
@@ -106,6 +107,26 @@ const effectDefs = {
           { u: 6/8, v: 0 },
         ],
         duration: 500,
+        loop: false,
+      },
+    },
+  },
+  [ EffectTypes.FireballImpact ]: {
+    textureUrl: '/assets/sprites/fireball.png',
+    textureScale: [ 1/8, 1 ],
+    size: 2,
+    randomRotation: false,
+    animationDefs: {
+      default: {
+        frames: [
+          { u: 1/8, v: 0 },
+          { u: 2/8, v: 0 },
+          { u: 3/8, v: 0 },
+          { u: 4/8, v: 0 },
+          { u: 5/8, v: 0 },
+          { u: 6/8, v: 0 },
+        ],
+        duration: 300,
         loop: false,
       },
     },
