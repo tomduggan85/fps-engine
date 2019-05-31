@@ -7,6 +7,7 @@ import Soldier from './Soldier'
 import Monster from './Monster'
 import AmbientLight from './AmbientLight'
 import { action, observable } from 'mobx'
+import RoomNode from './Map/RoomNode'
 
 Physijs.scripts.worker = '/external_js/physijs_worker.js';
 Physijs.scripts.ammo = '/external_js/ammo.js';
@@ -44,7 +45,16 @@ class GameState {
     this.gameObjects.push( this.player )
   }
 
-  createLevel() {
+  generateMap() {
+    this.addGameObject( AmbientLight )
+
+    //Root node
+    this.addGameObject( RoomNode, {
+      position: { x: 0, y: 0, z: -5 },
+    })
+  }
+
+  createLevelOld() {
     // TODO load a level
 
     this.addGameObject( AmbientLight )
@@ -223,7 +233,7 @@ class GameState {
 
     this.camera = new Camera({ gameState: this })
     this.createPlayer()
-    this.createLevel()
+    this.generateMap()
     
     this.startGameLoop()
   }

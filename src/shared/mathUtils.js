@@ -6,3 +6,8 @@ export const mapToRange = ( v, inRange, outRange ) => {
   const [ outLow, outHigh ] = outRange
   return outLow + pct * ( outHigh - outLow )
 }
+
+export const randomChoice = options => {
+  const count = options.length
+  return options[ Math.floor( Math.random() * count ) ]
+}
