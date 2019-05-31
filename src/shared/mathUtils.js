@@ -11,3 +11,5 @@ export const randomChoice = options => {
   const count = options.length
   return options[ Math.floor( Math.random() * count ) ]
 }
+
+export const randomBetween = ( min, max ) => min + Math.random() * ( max - min )

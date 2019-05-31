@@ -34,10 +34,12 @@ class GameState {
   }
 
   addGameObject( GameObjectType, props = {} ) {
-    this.gameObjects.push( new GameObjectType({
+    const gameObject = new GameObjectType({
       gameState: this,
       ...props
-    }))
+    })
+    this.gameObjects.push( gameObject )
+    return gameObject
   }
 
   createPlayer() {
@@ -49,9 +51,14 @@ class GameState {
     this.addGameObject( AmbientLight )
 
     //Root node
-    this.addGameObject( RoomNode, {
+    const rootNode = this.addGameObject( RoomNode, {
       position: { x: 0, y: 0, z: -5 },
     })
+
+    let node = rootNode
+    for( let i = 0; i < 8; i++ ) {
+      node = node.attachNewNode( RoomNode )
+    }
   }
 
   createLevelOld() {
