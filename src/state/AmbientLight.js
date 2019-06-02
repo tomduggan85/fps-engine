@@ -4,7 +4,7 @@ import GameObject from './GameObject'
 import GameObjectTypes from '../shared/enum/GameObjectTypes'
 import { action } from 'mobx'
 
-const DEFAULT_INTENSITY = 2.2
+const DEFAULT_INTENSITY = 2
 const DEFAULT_COLOR = 0x404040
 
 class AmbientLight extends GameObject {

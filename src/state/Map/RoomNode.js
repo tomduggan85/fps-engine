@@ -1,20 +1,51 @@
 /* global THREE Physijs */
 
 import MapNode, { wallThickness } from './MapNode'
-import { randomBetween } from '../../shared/mathUtils'
+import { randomBetween, randomChoice } from '../../shared/mathUtils'
+import Soldier from '../Soldier'
+import Monster from '../Monster'
 
 const WALL_FRICTION = 1
 const FLOOR_FRICTION = 1
 const RESTITUTION = 0.5
 
 
-
 class RoomNode extends MapNode {
 
+  step() {
+    if ( this.props.includeEnemies && !this.hasAddedEnemies ) {
+      /* Done on first step to ensure that this room position has been properly set by it's parent node. */
+      this.addEnemies()
+    }
+  }
+
+  addEnemies() {
+    console.error('enemy add')
+    console.error( this.width, this.height )
+    const { position } = this.sceneObject
+    const enemy = this.gameState.addGameObject( randomChoice([ Soldier, Monster ]), {
+      position: {
+        x: position.x,
+        y: position.y + 2,
+        z: position.z
+      }
+    })
+    this.containedGameObjects.push( enemy )
+    this.hasAddedEnemies = true
+  }
+
   chooseDimensions() {
-    this.length = randomBetween( 10, 40 )
-    this.width = randomBetween( this.props.from ? this.props.from.width : 10, 40 )
-    this.height = randomBetween( this.props.from ? this.props.from.height : 7, 17 )
+    
+    if ( Math.random() < 0.3 ) { /* "Big" room */
+      this.length = randomBetween( 15, 40 )
+      this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 15, 40 )
+      this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 6, 12 )
+    }
+    else { /* "Small" room */
+      this.length = randomBetween( 10, 40 )
+      this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 10, 20 )
+      this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 5, 6 )
+    }
   }
 
   createMaterial( url, repeatX, repeatY, friction ) {
@@ -65,7 +96,6 @@ class RoomNode extends MapNode {
 
   createPortalWallGeometry( width, height, direction ) {
     const portal = this.portals[ direction ]
-
     const boxes = []
 
     if ( portal.positionX + portal.width < width ) {
@@ -76,7 +106,7 @@ class RoomNode extends MapNode {
         0,
       );
       rightBox.position.set(
-        width / 2 - rightWidth / 2,
+        width / 2 - rightWidth / 2 + wallThickness,
         0,
         0
       )
@@ -91,7 +121,7 @@ class RoomNode extends MapNode {
         0,
       );
       middleBox.position.set(
-        -width / 2 + portal.positionX + portal.width / 2,
+        -width / 2 + portal.positionX + portal.width / 2 + wallThickness,
         height/2 - middleHeight / 2,
         0
       )
@@ -105,7 +135,7 @@ class RoomNode extends MapNode {
         0,
       );
       leftBox.position.set(
-        -width / 2 + portal.positionX / 2,
+        -width / 2 + portal.positionX / 2 + wallThickness,
         0,
         0
       )
@@ -139,7 +169,7 @@ class RoomNode extends MapNode {
       this.createMaterial( '/assets/textures/roof1.jpg', this.width / 4, this.length / 4, WALL_FRICTION ),
       0,
     );
-    ceiling.position.set( 0, this.height - wallThickness / 2, 0 )
+    ceiling.position.set( 0, this.height + wallThickness / 2, 0 )
     this.floor.add( ceiling )
 
     this.createWall( 'left' )

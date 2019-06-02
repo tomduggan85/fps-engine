@@ -150,7 +150,7 @@ class SpecialEffect extends GameObject {
 
     this.components.animation.setAnimation( 'default' )
 
-    setTimeout( this.remove, effectDef.animationDefs.default.duration )
+    setTimeout( this.remove.bind( this ), effectDef.animationDefs.default.duration )
   }
 
   createSceneObject() {

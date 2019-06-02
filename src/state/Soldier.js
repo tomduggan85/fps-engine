@@ -78,7 +78,7 @@ class Soldier extends Enemy {
       animationDefs,
       textureUrl: '/assets/sprites/soldier.png',
       textureScale: [ 0.085, 0.0627 ],
-      maxVelocity: 3,
+      maxVelocity: 6,
       radius: 1.55,
       startingHealth: 15,
     })

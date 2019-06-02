@@ -14,7 +14,7 @@ class Rocket extends BaseProjectile {
       textureScale: [ 1/8, 1/2 ],
       size: 1,
       mass: 15,
-      speed: 25,
+      speed: 35,
       animationDefs: {
         default: {
           frames: [

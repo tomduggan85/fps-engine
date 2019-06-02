@@ -31,7 +31,7 @@ class GameObject {
     Object.values( this.components ).forEach( component => component.step && component.step( deltaTime ))
   }
 
-  remove = () => {
+  remove() {
     this.scene.remove( this.sceneObject )
     this.gameState.removeGameObject( this )
   }

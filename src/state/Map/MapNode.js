@@ -2,9 +2,11 @@
 
 import GameObject from '../GameObject'
 import GameObjectTypes from '../../shared/enum/GameObjectTypes'
-import { randomChoice } from '../../shared/mathUtils'
+import { randomChoice, randomBetween } from '../../shared/mathUtils'
 
-export const wallThickness = 1
+export const wallThickness = 0.5
+
+let nodeIdCounter = 0
 
 class MapNode extends GameObject {
 
@@ -12,28 +14,66 @@ class MapNode extends GameObject {
 
   constructor( props ) {
     super( props )
+    this.containedGameObjects = []
+    this.nodeId = nodeIdCounter++
     this.position = props.position
+    this.yaw = 0 /* Track this separately so the physics engine can't introduce rounding errors as node trees get large */
+  }
+
+  setupRearPortal() {
+    const {
+      node,
+      width,
+      height,
+      direction
+    } = this.props.from
+
+    const maxPositionX = this.width - width - 2 * wallThickness
+    let positionX
+    if ( direction === 'left' ) {
+      positionX = 0
+    }
+    else if (direction === 'right' ) {
+      positionX = maxPositionX
+    }
+    else {
+      positionX = Math.random() * maxPositionX
+    }
+
+    this.portals.rear = {
+      node,
+      width,
+      height,
+      positionX,
+    }
   }
 
   setupPortals() {
     this.portals = {}
     if ( this.props.from ) {
-      this.portals.rear = {
-        node: this.props.from.node,
-        width: this.props.from.width,
-        height: this.props.from.height,
-        positionX: Math.random() * ( this.width - this.props.from.width )
-      }
+      this.setupRearPortal()
     }
 
-    const portalDirection = randomChoice([ 'left', 'right', 'front' ])
-    const maxPortalWidth = portalDirection === 'front' ? this.width : this.length
-    const portalWidth =  3 + Math.random() * (maxPortalWidth - 3)
+    const portalDirection = this.props.portalDirection
+    const maxPortalWidth = (( portalDirection === 'front' ? this.width : this.length ) - 2 * wallThickness)
+    const portalWidth =  randomBetween( 4, maxPortalWidth / 2 )
+
+    const maxPositionX = maxPortalWidth - portalWidth
+    let positionX
+    if ( portalDirection === 'left' ) {
+      positionX = maxPositionX
+    }
+    else if (portalDirection === 'right' ) {
+      positionX = maxPositionX
+    }
+    else {
+      positionX = Math.random() * maxPositionX
+    }
 
     this.portals[ portalDirection ] = {
       width: portalWidth,
       height: 6 + Math.random() * (this.height - 6),
-      positionX: Math.random() * ( maxPortalWidth - portalWidth ),
+      positionX
     }
   }
 
@@ -65,7 +105,7 @@ class MapNode extends GameObject {
     }
   }
 
-  attachNewNode( nodeType ) {
+  attachNewNode( nodeType, nodeProps ) {
 
     const openPortalDirection = ['left', 'right', 'front', 'rear'].find( direction => this.portals[ direction ] && !this.portals[ direction ].node )
     if ( !openPortalDirection ) {
@@ -75,27 +115,30 @@ class MapNode extends GameObject {
     const openPortal = this.portals[ openPortalDirection ]
 
     const node = this.props.gameState.addGameObject( nodeType, {
+      ...nodeProps,
       from: {
         node: this,
         width: openPortal.width,
         height: openPortal.height,
+        direction: openPortalDirection
       }
     })
     openPortal.node = node
 
     // Setup rotation
 
-    node.sceneObject.rotation.copy( this.sceneObject.rotation )
-
+    node.yaw = this.yaw
     if ( openPortalDirection === 'left' ) {
-      node.sceneObject.rotation.y += Math.PI / 2
+      node.yaw += Math.PI / 2
     }
     else if ( openPortalDirection === 'right' ) {
-      node.sceneObject.rotation.y -= Math.PI / 2
+      node.yaw -= Math.PI / 2
     }
     else if ( openPortalDirection === 'rear' ) {
-      node.sceneObject.rotation.y += Math.PI
+      node.yaw += Math.PI
     }
+
+    node.sceneObject.rotation.y = node.yaw
 
     // setup position
 
@@ -106,6 +149,33 @@ class MapNode extends GameObject {
     node.sceneObject.__dirtyPosition = true
     node.sceneObject.__dirtyRotation = true
     return node
+  }
+
+  isPlayerIn( player ) {
+    const localPosition = this.sceneObject.worldToLocal( player.sceneObject.position.clone())
+
+    const isInWidth = localPosition.x >= -this.width / 2 && localPosition.x <= this.width / 2
+    const isInLength = localPosition.z >= -this.length / 2 && localPosition.z <= this.length / 2
+    const isInHeight = localPosition.y > 0 && localPosition.y < this.height
+
+    return isInWidth && isInLength && isInHeight
+  }
+
+  detachPortal( portalDirection ) {
+    this.portals[ portalDirection ].node = null
+  }
+
+  remove() {
+    this.containedGameObjects.forEach( gameObject => gameObject.remove())
+    Object.values( this.portals ).forEach( portal => {
+      if (portal.node ) {
+        portal.node.detachPortal( 'rear' )
+      }
+    })
+    if ( this.props.from ) {
+      this.props.from.node.detachPortal( this.props.from.direction )
+    }
+    super.remove()
   }
 }
 
