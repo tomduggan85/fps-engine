@@ -9,6 +9,7 @@ const WALL_FRICTION = 1
 const FLOOR_FRICTION = 1
 const RESTITUTION = 0.5
 
+const PATROL_CHANCE = 0.5
 
 class RoomNode extends MapNode {
 
@@ -20,17 +21,28 @@ class RoomNode extends MapNode {
   }
 
   addEnemies() {
-    console.error('enemy add')
-    console.error( this.width, this.height )
-    const { position } = this.sceneObject
-    const enemy = this.gameState.addGameObject( randomChoice([ Soldier, Monster ]), {
-      position: {
-        x: position.x,
-        y: position.y + 2,
-        z: position.z
+    this.sceneObject.updateMatrixWorld( true )
+    const enemyRows = Math.max(1, Math.floor( this.width / 10 ) )
+
+    for ( let row = 0; row < enemyRows; row++ ) {
+      const localPosition = {
+        x: -this.width/2 + ( (row+1)/ (enemyRows+1) * this.width ),
+        y: 2,
+        z: 0
       }
-    })
-    this.containedGameObjects.push( enemy )
+      const worldPosition = this.sceneObject.localToWorld( new THREE.Vector3( localPosition.x, localPosition.y, localPosition.z ))
+        const enemy = this.gameState.addGameObject( randomChoice([ Soldier, Monster ]), {
+        position: {
+          x: worldPosition.x,
+          y: worldPosition.y,
+          z: worldPosition.z,
+        },
+        patrolDurations: Math.random() <= PATROL_CHANCE ? [ 1500, 500 ] : null
+      })
+      this.containedGameObjects.push( enemy )
+    }
+
+    
     this.hasAddedEnemies = true
   }
 

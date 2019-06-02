@@ -32,7 +32,7 @@ const TAKE_DAMAGE_TIME = 500
 
 const DEAD_REMOVAL_DELAY = 300
 
-const PLAYER_SIGHTLINE_THROTTLE = 400
+const PLAYER_SIGHTLINE_THROTTLE = 1000
 
 class AiLogic {
 
@@ -60,7 +60,7 @@ class AiLogic {
       canSeePlayer: false
     }
 
-    if ( props.patrol ) {
+    if ( !!props.patrolDurations ) {
       this.startPatrolAI()
     }
     else {
@@ -178,7 +178,7 @@ class AiLogic {
       range //far
     )
 
-    const { gameObject } = nearestRaycastGameObject( this.scene, raycast )
+    const { gameObject } = nearestRaycastGameObject( this.scene, raycast, [], true )
 
     const canSeePlayer = gameObject === this.player
 

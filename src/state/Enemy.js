@@ -112,7 +112,8 @@ class Enemy extends GameObject {
 
   @action
   step( deltaTime ) {
-    capMaxVelocity( this.sceneObject, this.maxVelocity )
+    const currentMaxVelocity = this.components.aiLogic.currentMode.name === 'PATROLLING' ? this.maxVelocity / 3 : this.maxVelocity /* Patrol at walk speed */
+    capMaxVelocity( this.sceneObject, currentMaxVelocity )
     super.step( deltaTime )
   }
 }

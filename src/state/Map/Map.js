@@ -4,7 +4,7 @@ import { randomChoice } from '../../shared/mathUtils'
 import { without } from 'lodash'
 
 const DESIRED_BRANCH_LENGTH = 4
-const FIRST_ROOM_WITH_ENEMIES = 2
+const FIRST_ROOM_WITH_ENEMIES = 3
 
 class Map {
   constructor( props ) {
