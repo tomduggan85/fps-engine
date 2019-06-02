@@ -35,6 +35,9 @@ class Player extends GameObject {
   @observable
   currentWeaponIndex = null
 
+  @observable
+  killCount = 0
+
   constructor( props ) {
     super( props )
     

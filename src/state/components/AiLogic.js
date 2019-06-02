@@ -244,6 +244,9 @@ class AiLogic {
       deadAt: performance.now()
     }
     this.setAnimation( explode ? 'explode' : 'dead' )
+
+    // Assume every enemy death is a player kill
+    this.player.killCount++
   }
 
   isPlayerInPeripheral() {

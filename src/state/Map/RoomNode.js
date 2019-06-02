@@ -11,6 +11,14 @@ const RESTITUTION = 0.5
 
 const PATROL_CHANCE = 0.5
 
+const WALL_TEXTURES = [
+  '/assets/textures/metal_floor_2.jpg',
+  '/assets/textures/metal_floor_3.jpg',
+  '/assets/textures/concrete_wall_1.jpg',
+  '/assets/textures/concrete_wall_2b.jpg',
+  '/assets/textures/grass1.jpg',
+]
+
 class RoomNode extends MapNode {
 
   step() {
@@ -52,6 +60,7 @@ class RoomNode extends MapNode {
       this.length = randomBetween( 15, 40 )
       this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 15, 40 )
       this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 6, 12 )
+      this.noCeiling = Math.random() < 0.5
     }
     else { /* "Small" room */
       this.length = randomBetween( 10, 40 )
@@ -101,7 +110,7 @@ class RoomNode extends MapNode {
   createSolidWallGeometry( width, height ) {
     return new Physijs.BoxMesh(
       new THREE.BoxGeometry( width, this.height, wallThickness ),
-      this.createMaterial( '/assets/textures/metal_floor_3.jpg', width / 4, height / 4, WALL_FRICTION ),
+      this.createMaterial( this.wallTexture, width / 4, height / 4, WALL_FRICTION ),
       0,
     );
   }
@@ -114,7 +123,7 @@ class RoomNode extends MapNode {
       const rightWidth = width - portal.positionX - portal.width
       const rightBox = new Physijs.BoxMesh(
         new THREE.BoxGeometry( rightWidth, height, wallThickness ),
-        this.createMaterial( '/assets/textures/metal_floor_3.jpg', rightWidth / 4, height / 4, WALL_FRICTION ),
+        this.createMaterial( this.wallTexture, rightWidth / 4, height / 4, WALL_FRICTION ),
         0,
       );
       rightBox.position.set(
@@ -129,7 +138,7 @@ class RoomNode extends MapNode {
       const middleHeight = (height - portal.height)
       const middleBox = new Physijs.BoxMesh(
         new THREE.BoxGeometry( portal.width, middleHeight, wallThickness ),
-        this.createMaterial( '/assets/textures/metal_floor_3.jpg', portal.width / 4, middleHeight / 4, WALL_FRICTION ),
+        this.createMaterial( this.wallTexture, portal.width / 4, middleHeight / 4, WALL_FRICTION ),
         0,
       );
       middleBox.position.set(
@@ -143,7 +152,7 @@ class RoomNode extends MapNode {
     if ( portal.positionX > 0 ) {
       const leftBox = new Physijs.BoxMesh(
         new THREE.BoxGeometry( portal.positionX, height, wallThickness ),
-        this.createMaterial( '/assets/textures/metal_floor_3.jpg', portal.positionX / 4, height / 4, WALL_FRICTION ),
+        this.createMaterial( this.wallTexture, portal.positionX / 4, height / 4, WALL_FRICTION ),
         0,
       );
       leftBox.position.set(
@@ -164,6 +173,7 @@ class RoomNode extends MapNode {
   }
 
   createSceneObject() {
+    this.wallTexture = randomChoice( WALL_TEXTURES )
     super.setupNode()
     const { position = { x: 0, y: 0, z: 0 } } = this.props
 
@@ -176,13 +186,15 @@ class RoomNode extends MapNode {
     this.floor.position.set( position.x, position.y, position.z )
 
     //Ceiling
-    const ceiling = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( this.width, wallThickness, this.length ),
-      this.createMaterial( '/assets/textures/roof1.jpg', this.width / 4, this.length / 4, WALL_FRICTION ),
-      0,
-    );
-    ceiling.position.set( 0, this.height + wallThickness / 2, 0 )
-    this.floor.add( ceiling )
+    if ( !this.noCeiling ) {
+      const ceiling = new Physijs.BoxMesh(
+        new THREE.BoxGeometry( this.width, wallThickness, this.length ),
+        this.createMaterial( '/assets/textures/roof1.jpg', this.width / 4, this.length / 4, WALL_FRICTION ),
+        0,
+      );
+      ceiling.position.set( 0, this.height + wallThickness / 2, 0 )
+      this.floor.add( ceiling )
+    }
 
     this.createWall( 'left' )
     this.createWall( 'right' )

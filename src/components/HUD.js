@@ -16,7 +16,7 @@ class HUD extends React.Component {
       }
     } = this.props.player.components
 
-    const { currentWeapon } = this.props.player
+    const { currentWeapon, killCount } = this.props.player
 
     return (
       <div className='HUD'>
@@ -25,6 +25,7 @@ class HUD extends React.Component {
           {currentWeapon && <PlayerWeaponRenderer weapon={currentWeapon} />}
           <div className='stat'>Health: {currentHealth}</div>
           {currentWeapon && <div className='stat'>Ammo: {currentWeapon.ammo}</div>}
+          <div className='stat'>Kills: {killCount}</div>
         </div>
         <div className={classnames('overlay dead-overlay', { isActive: isDead })} />
       </div>
