@@ -3,6 +3,7 @@
 import Camera from './Camera'
 import Player from './Player'
 import Map from './Map/Map'
+import Skybox from './Skybox'
 
 import { action, observable } from 'mobx'
 
@@ -51,7 +52,11 @@ class GameState {
 
     this.camera = new Camera({ gameState: this })
     this.createPlayer()
-    
+
+    this.skybox = new Skybox({
+      gameState: this
+    })
+
     this.map = new Map({
       player: this.player,
       gameState: this,

@@ -15,3 +15,14 @@ export const randomChoice = options => {
 export const randomBetween = ( min, max ) => {
   return Math.max(min, min + Math.random() * ( max - min ))
 }
+
+export const randomWeightedChoice = options => {
+  const totalWeight = options.reduce(( accum, { weight }) => accum + weight, 0)
+  const randValue = Math.random() * totalWeight
+  
+  let weightRunningTotal = 0
+  return options.find(({ value, weight }) => {
+    weightRunningTotal += weight
+    return randValue <= weightRunningTotal
+  }).value
+}

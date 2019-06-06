@@ -1,7 +1,10 @@
-import RoomNode from './RoomNode'
 import AmbientLight from '../AmbientLight'
-import { randomChoice } from '../../shared/mathUtils'
+import { randomChoice, randomWeightedChoice } from '../../shared/mathUtils'
 import { without } from 'lodash'
+import BigRoom from './BigRoom'
+import SmallRoom from './SmallRoom'
+import Hall from './Hall'
+import RoomTypes from '../../shared/enum/RoomTypes'
 
 const DESIRED_BRANCH_LENGTH = 4
 const FIRST_ROOM_WITH_ENEMIES = 3
@@ -14,7 +17,7 @@ class Map {
     this.gameState.addGameObject( AmbientLight )
 
     //Root node
-    const rootNode = this.gameState.addGameObject( RoomNode, {
+    const rootNode = this.gameState.addGameObject( this.randomRoomType(), {
       position: { x: 0, y: 0, z: 0 },
       portalDirection: this.randomPortalDirection()
     })
@@ -28,6 +31,16 @@ class Map {
     return randomChoice( without([ 'left', 'right', 'front' ], toAvoid ))
   }
 
+  randomRoomType( fromNode ) {
+    const fromHall = fromNode && fromNode.roomType === RoomTypes.Hall
+
+    return randomWeightedChoice([
+      { value: BigRoom, weight: 0.4 },
+      { value: SmallRoom, weight: 0.4 },
+      { value: Hall, weight: fromHall ? 0.5 : 0.3 },
+    ])
+  }
+
   addNodesTo( sourceNode, count ) {
     let currentNode = sourceNode
     const branchDirectionLeadingToNode = Object.keys( sourceNode.portals ).find( direction => !!sourceNode.portals[ direction ].node )
@@ -39,7 +52,7 @@ class Map {
       const turnToAvoid = portalDirectionsLeadingToNode.find( direction => direction !== 'front' )
       const portalDirection = this.randomPortalDirection( turnToAvoid )
       
-      currentNode = currentNode.attachNewNode( RoomNode, {
+      currentNode = currentNode.attachNewNode( this.randomRoomType( currentNode ), {
         portalDirection,
         includeEnemies: this.nodesCreatedCount >= FIRST_ROOM_WITH_ENEMIES - 1,
       })

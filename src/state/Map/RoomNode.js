@@ -1,33 +1,185 @@
 /* global THREE Physijs */
 
-import MapNode, { wallThickness } from './MapNode'
+import GameObject from '../GameObject'
+import GameObjectTypes from '../../shared/enum/GameObjectTypes'
 import { randomBetween, randomChoice } from '../../shared/mathUtils'
 import Soldier from '../Soldier'
 import Monster from '../Monster'
+import WallTextures from './WallTextures'
 
 const WALL_FRICTION = 1
 const FLOOR_FRICTION = 1
 const RESTITUTION = 0.5
-
 const PATROL_CHANCE = 0.5
 
-const WALL_TEXTURES = [
-  '/assets/textures/metal_floor_2.jpg',
-  '/assets/textures/metal_floor_3.jpg',
-  '/assets/textures/concrete_wall_1.jpg',
-  '/assets/textures/concrete_wall_2b.jpg',
-  '/assets/textures/grass1.jpg',
-]
+const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
-class RoomNode extends MapNode {
+export const wallThickness = 1
+let nodeIdCounter = 0
+
+class MapNode extends GameObject {
+
+  type = GameObjectTypes.Scenery
+
+  constructor( props ) {
+    super( props )
+    this.containedGameObjects = []
+    this.nodeId = nodeIdCounter++
+    this.position = props.position
+    this.roomType = props.roomType
+    this.yaw = 0 /* Track this separately so the physics engine can't introduce rounding errors as node trees get large */
+  }
+
+  setupRearPortal() {
+    const {
+      node,
+      width,
+      height,
+      direction
+    } = this.props.from
+
+    const maxPositionX = Math.max(0, this.width - width - 2 * wallThickness)
+    let positionX
+    if ( direction === 'left' ) {
+      positionX = 0
+    }
+    else if (direction === 'right' ) {
+      positionX = maxPositionX
+    }
+    else {
+      positionX = Math.random() * maxPositionX
+    }
+
+    this.portals.rear = {
+      node,
+      width,
+      height,
+      positionX,
+    }
+  }
+
+  setupPortals() {
+    this.portals = {}
+    if ( this.props.from ) {
+      this.setupRearPortal()
+    }
+
+    const portalDirection = this.props.portalDirection
+    const { width, height, positionX } = this.choosePortalDimensions()
+
+    this.portals[ portalDirection ] = {
+      width, height, positionX
+    }
+  }
+
+  setupNode() {
+    this.chooseDimensions() /* Child classes override this */
+    this.setupPortals()
+  }
+
+  getPortalLocalPosition( portalDirection ) {
+    const portal = this.portals[ portalDirection ]
+    if ( !portal ) {
+      return
+    }
+
+    switch( portalDirection ) {
+      case 'front': return { x: -this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: -this.length / 2 }
+      case 'rear': return { x: -this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: this.length / 2 }
+      case 'left': return { x: -this.width / 2, y: 0, z: this.length / 2 - portal.positionX - portal.width / 2 }
+      case 'right': return { x: this.width / 2, y: 0, z: this.length / 2 - portal.positionX - portal.width / 2 - wallThickness }
+      default: return null
+    }
+  }
+
+  getPortalWorldPosition( portalDirection ) {
+    const localPosition = this.getPortalLocalPosition( portalDirection )
+    if ( localPosition ) {
+      this.sceneObject.updateMatrixWorld( true )
+      return this.sceneObject.localToWorld( new THREE.Vector3( localPosition.x, localPosition.y, localPosition.z ))
+    }
+  }
+
+  attachNewNode( nodeType, nodeProps ) {
+
+    const openPortalDirection = ['left', 'right', 'front', 'rear'].find( direction => this.portals[ direction ] && !this.portals[ direction ].node )
+    if ( !openPortalDirection ) {
+      return
+    }
+
+    const openPortal = this.portals[ openPortalDirection ]
+
+    const node = this.props.gameState.addGameObject( nodeType, {
+      ...nodeProps,
+      from: {
+        node: this,
+        width: openPortal.width,
+        height: openPortal.height,
+        direction: openPortalDirection
+      }
+    })
+    openPortal.node = node
+
+    // Setup rotation
+
+    node.yaw = this.yaw
+    if ( openPortalDirection === 'left' ) {
+      node.yaw += Math.PI / 2
+    }
+    else if ( openPortalDirection === 'right' ) {
+      node.yaw -= Math.PI / 2
+    }
+    else if ( openPortalDirection === 'rear' ) {
+      node.yaw += Math.PI
+    }
+
+    node.sceneObject.rotation.y = node.yaw
+
+    // setup position
+
+    const openPortalPosition = this.getPortalWorldPosition( openPortalDirection )
+    const newNodePortalPosition = node.getPortalWorldPosition( 'rear' )
+    node.sceneObject.position.copy( openPortalPosition.sub(newNodePortalPosition))
+
+    node.sceneObject.__dirtyPosition = true
+    node.sceneObject.__dirtyRotation = true
+    return node
+  }
+
+  isPlayerIn( player ) {
+    const localPosition = this.sceneObject.worldToLocal( player.sceneObject.position.clone())
+
+    const isInWidth = localPosition.x >= -this.width / 2 && localPosition.x <= this.width / 2
+    const isInLength = localPosition.z >= -this.length / 2 && localPosition.z <= this.length / 2
+    const isInHeight = localPosition.y > 0 && localPosition.y < this.height
+
+    return isInWidth && isInLength && isInHeight
+  }
+
+  detachPortal( portalDirection ) {
+    this.portals[ portalDirection ].node = null
+  }
+
+  remove() {
+    this.containedGameObjects.forEach( gameObject => gameObject.remove())
+    Object.values( this.portals ).forEach( portal => {
+      if (portal.node ) {
+        portal.node.detachPortal( 'rear' )
+      }
+    })
+    if ( this.props.from ) {
+      this.props.from.node.detachPortal( this.props.from.direction )
+    }
+    super.remove()
+  }
 
   step() {
     if ( this.props.includeEnemies && !this.hasAddedEnemies ) {
       /* Done on first step to ensure that this room position has been properly set by it's parent node. */
-      this.addEnemies()
+      // DO NOT COMMIT this.addEnemies()
     }
   }
-
+  
   addEnemies() {
     this.sceneObject.updateMatrixWorld( true )
     const enemyRows = Math.max(1, Math.floor( this.width / 10 ) )
@@ -54,18 +206,30 @@ class RoomNode extends MapNode {
     this.hasAddedEnemies = true
   }
 
-  chooseDimensions() {
+  getMaxPortalWidth() {
+    return this.props.portalDirection === 'front' ? this.width : this.length
+  }
+
+
+  choosePortalDimensions() {
+    const { portalDirection } = this.props
+    const maxPortalWidth = this.getMaxPortalWidth()
+
+    const portalWidth = randomBetween( 4, maxPortalWidth / 2 )
+    const maxPositionX = maxPortalWidth - portalWidth - wallThickness
+    let positionX
     
-    if ( Math.random() < 0.3 ) { /* "Big" room */
-      this.length = randomBetween( 15, 40 )
-      this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 15, 40 )
-      this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 6, 12 )
-      this.noCeiling = Math.random() < 0.5
+    if (portalDirection === 'right' || portalDirection === 'left' ) {
+      positionX = randomBetween( maxPositionX * 0.5, maxPositionX )
     }
-    else { /* "Small" room */
-      this.length = randomBetween( 10, 40 )
-      this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 10, 20 )
-      this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 5, 6 )
+    else {
+      positionX = Math.random() * maxPositionX
+    }
+
+    return {
+      width: portalWidth,
+      height: ( 6 + Math.random() * (this.height - 6)),
+      positionX,
     }
   }
 
@@ -94,17 +258,18 @@ class RoomNode extends MapNode {
       this.createPortalWallGeometry( wallWidth, this.height, direction ) : 
       this.createSolidWallGeometry( wallWidth, this.height )
     
-    if ( isSideWall ) {
-      wall.rotation.y = Math.PI / 2
+    if ( wall ) {
+      if ( isSideWall ) {
+        wall.rotation.y = Math.PI / 2
+      }
+      wall.position.set(
+        (isSideWall ? ( this.width / 2 - wallThickness / 2 ) * ( direction === 'right' ? 1 : -1 ) : wall.position.x ),
+        this.height / 2 + wall.position.y,
+        !isSideWall ? ( this.length / 2 - wallThickness / 2 ) * ( direction === 'front' ? -1 : 1 ) : -wall.position.x
+      )
+      
+      this.floor.add(wall)
     }
-
-    wall.position.set(
-      (isSideWall ? ( this.width / 2 - wallThickness / 2 ) * ( direction === 'right' ? 1 : -1 ) : wall.position.x ),
-      this.height / 2 + wall.position.y,
-      !isSideWall ? ( this.length / 2 - wallThickness / 2 ) * ( direction === 'front' ? -1 : 1 ) : -wall.position.x
-    )
-    
-    this.floor.add(wall)
   }
 
   createSolidWallGeometry( width, height ) {
@@ -118,50 +283,73 @@ class RoomNode extends MapNode {
   createPortalWallGeometry( width, height, direction ) {
     const portal = this.portals[ direction ]
     const boxes = []
-
-    if ( portal.positionX + portal.width < width ) {
-      const rightWidth = width - portal.positionX - portal.width
-      const rightBox = new Physijs.BoxMesh(
-        new THREE.BoxGeometry( rightWidth, height, wallThickness ),
-        this.createMaterial( this.wallTexture, rightWidth / 4, height / 4, WALL_FRICTION ),
-        0,
-      );
-      rightBox.position.set(
-        width / 2 - rightWidth / 2 + wallThickness,
-        0,
-        0
-      )
-      boxes.push(rightBox)
-    }
+    const portalEdgeMaterial = this.createMaterial( PORTAL_EDGE_TEXTURE, 1, height / 2, WALL_FRICTION )
+    const topPortalEdgeMaterial = this.createMaterial( PORTAL_EDGE_TEXTURE, 1, portal.width / 2, WALL_FRICTION )
+    topPortalEdgeMaterial.map.rotation = Math.PI / 2
+    
+    const rightWidth = width - portal.positionX - portal.width
+    const rightMaterial = this.createMaterial( this.wallTexture, rightWidth / 4, height / 4, WALL_FRICTION )
+    const rightBox = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( rightWidth + 0.1, height, wallThickness ),
+      [
+        rightMaterial,
+        portalEdgeMaterial,
+        rightMaterial,
+        rightMaterial,
+        rightMaterial,
+        rightMaterial,
+      ],
+      0,
+    );
+    rightBox.position.set(
+      width / 2 - rightWidth / 2,
+      0,
+      0
+    )
+    boxes.push(rightBox)
 
     if ( height > portal.height ) {
       const middleHeight = (height - portal.height)
+      const middleMaterial = this.createMaterial( this.wallTexture, portal.width / 4, middleHeight / 4, WALL_FRICTION )
       const middleBox = new Physijs.BoxMesh(
-        new THREE.BoxGeometry( portal.width, middleHeight, wallThickness ),
-        this.createMaterial( this.wallTexture, portal.width / 4, middleHeight / 4, WALL_FRICTION ),
+        new THREE.BoxGeometry( portal.width - wallThickness, middleHeight, wallThickness ),
+        [
+          middleMaterial,
+          middleMaterial,
+          middleMaterial,
+          topPortalEdgeMaterial,
+          middleMaterial,
+          middleMaterial,
+        ],
         0,
       );
       middleBox.position.set(
-        -width / 2 + portal.positionX + portal.width / 2 + wallThickness,
+        -width / 2 + portal.positionX + portal.width / 2 + wallThickness / 2,
         height/2 - middleHeight / 2,
         0
       )
       boxes.push(middleBox)
     }
 
-    if ( portal.positionX > 0 ) {
-      const leftBox = new Physijs.BoxMesh(
-        new THREE.BoxGeometry( portal.positionX, height, wallThickness ),
-        this.createMaterial( this.wallTexture, portal.positionX / 4, height / 4, WALL_FRICTION ),
-        0,
-      );
-      leftBox.position.set(
-        -width / 2 + portal.positionX / 2 + wallThickness,
-        0,
-        0
-      )
-      boxes.push(leftBox)
-    }
+    const leftMaterial = this.createMaterial( this.wallTexture, ( portal.positionX + wallThickness ) / 4, height / 4, WALL_FRICTION )
+    const leftBox = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( portal.positionX + wallThickness + 0.1, height, wallThickness ),
+      [
+        portalEdgeMaterial,
+        leftMaterial,
+        leftMaterial,
+        leftMaterial,
+        leftMaterial,
+        leftMaterial,
+      ],
+      0,
+    );
+    leftBox.position.set(
+      -width / 2 + portal.positionX / 2 + wallThickness/2,
+      0,
+      0
+    )
+    boxes.push(leftBox)
 
     //Attach every subsequent box to the first box, and move to be relative to the first box's position
     for ( let i = 1; i < boxes.length; i++ ) {
@@ -173,8 +361,8 @@ class RoomNode extends MapNode {
   }
 
   createSceneObject() {
-    this.wallTexture = randomChoice( WALL_TEXTURES )
-    super.setupNode()
+    this.wallTexture = randomChoice( WallTextures )
+    this.setupNode()
     const { position = { x: 0, y: 0, z: 0 } } = this.props
 
     //Floor
@@ -186,7 +374,7 @@ class RoomNode extends MapNode {
     this.floor.position.set( position.x, position.y, position.z )
 
     //Ceiling
-    if ( !this.noCeiling ) {
+    if ( !this.props.noCeiling ) {
       const ceiling = new Physijs.BoxMesh(
         new THREE.BoxGeometry( this.width, wallThickness, this.length ),
         this.createMaterial( '/assets/textures/roof1.jpg', this.width / 4, this.length / 4, WALL_FRICTION ),
@@ -205,4 +393,4 @@ class RoomNode extends MapNode {
   }
 }
 
-export default RoomNode
+export default MapNode
