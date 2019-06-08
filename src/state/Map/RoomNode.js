@@ -12,6 +12,7 @@ import Monster from '../Monster'
 import WallTextures from './WallTextures'
 import CeilingTextures from './CeilingTextures'
 import FloorTextures from './FloorTextures'
+import OutdoorGroundTextures from './OutdoorGroundTextures'
 
 const ENABLE_ENEMIES = false
 
@@ -19,6 +20,7 @@ const WALL_FRICTION = 1
 const FLOOR_FRICTION = 1
 const RESTITUTION = 0.5
 const PATROL_CHANCE = 0.5
+const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.5
 
 const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
@@ -384,6 +386,35 @@ class MapNode extends GameObject {
     this[ classProperty ] = randomWeightedChoice( textureSet )
   }
 
+  createFloor() {
+    const { position = { x: 0, y: 0, z: 0 } } = this.props
+
+    let texture = this.floorTexture
+    if ( this.props.noCeiling && Math.random() < OUTDOOR_GROUND_TEXTURE_CHANCE ) {
+      //Override with an outdoor ground texture
+      console.error("OVERRIDE")
+      texture = randomWeightedChoice( OutdoorGroundTextures )
+      console.error(texture)
+    }
+
+    this.floor = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( this.width, wallThickness, this.length ),
+      this.createMaterial( texture.url, this.width / texture.scale, this.length / texture.scale, FLOOR_FRICTION ),
+      0,
+    );
+    this.floor.position.set( position.x, position.y, position.z )
+  }
+
+  createCeiling() {
+    const ceiling = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( this.width, wallThickness, this.length ),
+      this.createMaterial( this.ceilingTexture.url, this.width / this.ceilingTexture.scale, this.length / this.ceilingTexture.scale, WALL_FRICTION ),
+      0,
+    );
+    ceiling.position.set( 0, this.height + wallThickness, 0 )
+    this.floor.add( ceiling )
+  }
+
   createSceneObject() {
     this.pickTexture( 'wallTexture', WallTextures, 0.2 )
     this.pickTexture( 'floorTexture', FloorTextures, 0.06 )
@@ -391,25 +422,9 @@ class MapNode extends GameObject {
 
     this.setupNode()
     
-    const { position = { x: 0, y: 0, z: 0 } } = this.props
-
-    //Floor
-    this.floor = new Physijs.BoxMesh(
-      new THREE.BoxGeometry( this.width, wallThickness, this.length ),
-      this.createMaterial( this.floorTexture.url, this.width / this.floorTexture.scale, this.length / this.floorTexture.scale, FLOOR_FRICTION ),
-      0,
-    );
-    this.floor.position.set( position.x, position.y, position.z )
-
-    //Ceiling
+    this.createFloor()
     if ( !this.props.noCeiling ) {
-      const ceiling = new Physijs.BoxMesh(
-        new THREE.BoxGeometry( this.width, wallThickness, this.length ),
-        this.createMaterial( this.ceilingTexture.url, this.width / this.ceilingTexture.scale, this.length / this.ceilingTexture.scale, WALL_FRICTION ),
-        0,
-      );
-      ceiling.position.set( 0, this.height + wallThickness, 0 )
-      this.floor.add( ceiling )
+      this.createCeiling()
     }
 
     this.createWall( 'left' )
