@@ -299,6 +299,7 @@ class MapNode extends GameObject {
     
     const rightWidth = width - portal.positionX - portal.width
     const rightMaterial = this.createMaterial( this.wallTexture.url, rightWidth / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION )
+    rightMaterial.map.offset.set( ( portal.width + portal.positionX + wallThickness + 0.1 ) / this.wallTexture.scale, 0 )
     const rightBox = new Physijs.BoxMesh(
       new THREE.BoxGeometry( rightWidth + 0.1, height, wallThickness ),
       [
@@ -321,6 +322,7 @@ class MapNode extends GameObject {
     if ( height > portal.height ) {
       const middleHeight = (height - portal.height)
       const middleMaterial = this.createMaterial( this.wallTexture.url, portal.width / this.wallTexture.scale, middleHeight / this.wallTexture.scale, WALL_FRICTION )
+      middleMaterial.map.offset.set( ( portal.positionX + wallThickness + 0.1 ) / this.wallTexture.scale, portal.height / this.wallTexture.scale )
       const middleBox = new Physijs.BoxMesh(
         new THREE.BoxGeometry( portal.width - wallThickness, middleHeight, wallThickness ),
         [
