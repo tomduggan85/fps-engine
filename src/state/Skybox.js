@@ -4,7 +4,7 @@ import { randomChoice } from '../shared/mathUtils'
 
 const SKYBOX_CHOICES = [
   'red_gloom',
-  'asteroids',
+  //'asteroids',
   'distant_sunset',
   'exosystem',
   'exosystem2',

@@ -17,3 +17,6 @@ https://opengameart.org/content/5x-special-effects-2d
 https://opengameart.org/content/gloomy-skybox
 https://opengameart.org/content/red-eclipse-skyboxes
 https://opengameart.org/content/xonotic-skyboxes
+http://www.textures4photoshop.com/tex/metal/
+https://soundimage.org/txr-sci-fi/
+http://terminal26.de/
