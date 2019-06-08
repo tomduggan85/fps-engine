@@ -14,7 +14,7 @@ import CeilingTextures from './CeilingTextures'
 import FloorTextures from './FloorTextures'
 import OutdoorGroundTextures from './OutdoorGroundTextures'
 
-const ENABLE_ENEMIES = false
+const ENABLE_ENEMIES = true
 
 const WALL_FRICTION = 1
 const FLOOR_FRICTION = 1
