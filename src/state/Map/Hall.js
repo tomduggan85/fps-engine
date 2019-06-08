@@ -36,6 +36,17 @@ class Hall extends RoomNode {
   getEnemyRowCount() {
     return 1 // Only ever one enemy per hall section
   }
+
+  addInteriorDecor() {
+    //Override as no-op since there is not enough space
+  }
+
+  createPortalWallGeometry( width, height, direction ) {
+    //Only create wall geometry if exiting to the left or right.  Otherwise, it's unnecessary
+    if ( direction === 'left' || direction === 'right' ) {
+      return super.createPortalWallGeometry( width, height, direction )
+    }
+  }
 }
 
 export default Hall

@@ -13,19 +13,22 @@ import WallTextures from './WallTextures'
 import CeilingTextures from './CeilingTextures'
 import FloorTextures from './FloorTextures'
 import OutdoorGroundTextures from './OutdoorGroundTextures'
+import { addRandomInteriorDecor } from './InteriorDecor'
+import {
+  WALL_FRICTION,
+  FLOOR_FRICTION
+} from './MapPhysics'
+import { createMaterial } from './Materials'
+import { generateGridPositions } from '../../shared/sceneUtils'
 
-const ENABLE_ENEMIES = true
+const ENABLE_ENEMIES = false
 
-const WALL_FRICTION = 1
-const FLOOR_FRICTION = 1
-const RESTITUTION = 0.5
 const PATROL_CHANCE = 0.5
 const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.5
 
 const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
 export const wallThickness = 1
-let nodeIdCounter = 0
 
 class MapNode extends GameObject {
 
@@ -34,7 +37,6 @@ class MapNode extends GameObject {
   constructor( props ) {
     super( props )
     this.containedGameObjects = []
-    this.nodeId = nodeIdCounter++
     this.position = props.position
     this.roomType = props.roomType
     this.yaw = 0 /* Track this separately so the physics engine can't introduce rounding errors as node trees get large */
@@ -191,27 +193,21 @@ class MapNode extends GameObject {
   }
   
   addEnemies() {
-    this.sceneObject.updateMatrixWorld( true )
-    const enemyRows = Math.max(1, Math.floor( this.width / 10 ) )
 
-    for ( let row = 0; row < enemyRows; row++ ) {
-      const localPosition = {
-        x: -this.width/2 + ( (row+1)/ (enemyRows+1) * this.width ),
-        y: 2,
-        z: 0
-      }
-      const worldPosition = this.sceneObject.localToWorld( new THREE.Vector3( localPosition.x, localPosition.y, localPosition.z ))
-        const enemy = this.gameState.addGameObject( randomChoice([ Soldier, Monster ]), {
-        position: {
-          x: worldPosition.x,
-          y: worldPosition.y,
-          z: worldPosition.z,
-        },
+    const positions = generateGridPositions({
+      width: this.width,
+      length: this.length,
+      xSpacing: 10,
+      //No zSpacing, so only 1 column of enemies
+    }, this.sceneObject)
+
+    positions.forEach(({ x, z }) => {
+      const enemy = this.gameState.addGameObject( randomChoice([ Soldier, Monster ]), {
+        position: { x, y: 2, z },
         patrolDurations: Math.random() <= PATROL_CHANCE ? [ 1500, 500 ] : null
       })
       this.containedGameObjects.push( enemy )
-    }
-
+    })
     
     this.hasAddedEnemies = true
   }
@@ -225,7 +221,7 @@ class MapNode extends GameObject {
     const { portalDirection } = this.props
     const maxPortalWidth = this.getMaxPortalWidth()
 
-    const portalWidth = randomBetween( 4, maxPortalWidth / 2 )
+    const portalWidth = randomBetween( 6, maxPortalWidth / 2 )
     const maxPositionX = maxPortalWidth - portalWidth - wallThickness
     let positionX
     
@@ -241,23 +237,6 @@ class MapNode extends GameObject {
       height: ( 6 + Math.random() * (this.height - 6)),
       positionX,
     }
-  }
-
-  createMaterial( url, repeatX, repeatY, friction ) {
-    const texture = new THREE.TextureLoader().load( url )
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-    texture.magFilter = THREE.NearestFilter //Pixelate!
-    texture.minFilter = THREE.NearestMipMapLinearFilter //Pixelate!
-    texture.repeat.set( repeatX, repeatY )
-
-    return Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({
-        map: texture
-      }),
-      friction,
-      RESTITUTION,
-    );
   }
 
   createWall( direction ) {
@@ -285,7 +264,7 @@ class MapNode extends GameObject {
   createSolidWallGeometry( width, height ) {
     return new Physijs.BoxMesh(
       new THREE.BoxGeometry( width, this.height, wallThickness ),
-      this.createMaterial( this.wallTexture.url, width / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION ),
+      createMaterial( this.wallTexture.url, width / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION ),
       0,
     );
   }
@@ -293,12 +272,12 @@ class MapNode extends GameObject {
   createPortalWallGeometry( width, height, direction ) {
     const portal = this.portals[ direction ]
     const boxes = []
-    const portalEdgeMaterial = this.createMaterial( PORTAL_EDGE_TEXTURE, 1, height / 2, WALL_FRICTION )
-    const topPortalEdgeMaterial = this.createMaterial( PORTAL_EDGE_TEXTURE, 1, portal.width / 2, WALL_FRICTION )
+    const portalEdgeMaterial = createMaterial( PORTAL_EDGE_TEXTURE, 1, height / 2, WALL_FRICTION )
+    const topPortalEdgeMaterial = createMaterial( PORTAL_EDGE_TEXTURE, 1, portal.width / 2, WALL_FRICTION )
     topPortalEdgeMaterial.map.rotation = Math.PI / 2
     
     const rightWidth = width - portal.positionX - portal.width
-    const rightMaterial = this.createMaterial( this.wallTexture.url, rightWidth / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION )
+    const rightMaterial = createMaterial( this.wallTexture.url, rightWidth / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION )
     rightMaterial.map.offset.set( ( portal.width + portal.positionX + wallThickness + 0.1 ) / this.wallTexture.scale, 0 )
     const rightBox = new Physijs.BoxMesh(
       new THREE.BoxGeometry( rightWidth + 0.1, height, wallThickness ),
@@ -321,7 +300,7 @@ class MapNode extends GameObject {
 
     if ( height > portal.height ) {
       const middleHeight = (height - portal.height)
-      const middleMaterial = this.createMaterial( this.wallTexture.url, portal.width / this.wallTexture.scale, middleHeight / this.wallTexture.scale, WALL_FRICTION )
+      const middleMaterial = createMaterial( this.wallTexture.url, portal.width / this.wallTexture.scale, middleHeight / this.wallTexture.scale, WALL_FRICTION )
       middleMaterial.map.offset.set( ( portal.positionX + wallThickness + 0.1 ) / this.wallTexture.scale, portal.height / this.wallTexture.scale )
       const middleBox = new Physijs.BoxMesh(
         new THREE.BoxGeometry( portal.width - wallThickness, middleHeight, wallThickness ),
@@ -343,7 +322,7 @@ class MapNode extends GameObject {
       boxes.push(middleBox)
     }
 
-    const leftMaterial = this.createMaterial( this.wallTexture.url, ( portal.positionX + wallThickness ) / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION )
+    const leftMaterial = createMaterial( this.wallTexture.url, ( portal.positionX + wallThickness ) / this.wallTexture.scale, height / this.wallTexture.scale, WALL_FRICTION )
     const leftBox = new Physijs.BoxMesh(
       new THREE.BoxGeometry( portal.positionX + wallThickness + 0.1, height, wallThickness ),
       [
@@ -394,14 +373,12 @@ class MapNode extends GameObject {
     let texture = this.floorTexture
     if ( this.props.noCeiling && Math.random() < OUTDOOR_GROUND_TEXTURE_CHANCE ) {
       //Override with an outdoor ground texture
-      console.error("OVERRIDE")
       texture = randomWeightedChoice( OutdoorGroundTextures )
-      console.error(texture)
     }
 
     this.floor = new Physijs.BoxMesh(
       new THREE.BoxGeometry( this.width, wallThickness, this.length ),
-      this.createMaterial( texture.url, this.width / texture.scale, this.length / texture.scale, FLOOR_FRICTION ),
+      createMaterial( texture.url, this.width / texture.scale, this.length / texture.scale, FLOOR_FRICTION ),
       0,
     );
     this.floor.position.set( position.x, position.y, position.z )
@@ -410,11 +387,26 @@ class MapNode extends GameObject {
   createCeiling() {
     const ceiling = new Physijs.BoxMesh(
       new THREE.BoxGeometry( this.width, wallThickness, this.length ),
-      this.createMaterial( this.ceilingTexture.url, this.width / this.ceilingTexture.scale, this.length / this.ceilingTexture.scale, WALL_FRICTION ),
+      createMaterial( this.ceilingTexture.url, this.width / this.ceilingTexture.scale, this.length / this.ceilingTexture.scale, WALL_FRICTION ),
       0,
     );
     ceiling.position.set( 0, this.height + wallThickness, 0 )
     this.floor.add( ceiling )
+  }
+
+  addInteriorDecor() {
+    if ( this.props.noCeiling || this.props.noInteriorDecor ) {
+      return
+    }
+
+    const objects = addRandomInteriorDecor( this )
+    if ( objects ) {
+      objects.forEach( object => this.containedGameObjects.push( object ))
+    }
+  }
+
+  addWallDecor() {
+    //TODO 
   }
 
   createSceneObject() {
@@ -433,6 +425,9 @@ class MapNode extends GameObject {
     this.createWall( 'right' )
     this.createWall( 'front' )
     this.createWall( 'rear' )
+
+    this.addInteriorDecor()
+    this.addWallDecor()
 
     return this.floor
   }

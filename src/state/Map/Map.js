@@ -19,7 +19,8 @@ class Map {
     //Root node
     const rootNode = this.gameState.addGameObject( this.randomRoomType(), {
       position: { x: 0, y: 0, z: 0 },
-      portalDirection: this.randomPortalDirection()
+      portalDirection: this.randomPortalDirection(),
+      noInteriorDecor: true
     })
     this.nodesCreatedCount = 1
 
@@ -35,7 +36,7 @@ class Map {
     const fromHall = fromNode && fromNode.roomType === RoomTypes.Hall
 
     return randomWeightedChoice([
-      { value: BigRoom, weight: 0.4 },
+      { value: BigRoom, weight: 0.5 },
       { value: SmallRoom, weight: 0.4 },
       { value: Hall, weight: fromHall ? 0.5 : 0.3 },
     ])
