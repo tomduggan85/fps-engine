@@ -2,6 +2,7 @@ import AmbientLight from '../AmbientLight'
 import { randomChoice, randomWeightedChoice } from '../../shared/mathUtils'
 import { without } from 'lodash'
 import BigRoom from './BigRoom'
+import NoCeilingRoom from './NoCeilingRoom'
 import SmallRoom from './SmallRoom'
 import Hall from './Hall'
 import RoomTypes from '../../shared/enum/RoomTypes'
@@ -17,7 +18,7 @@ class Map {
     this.gameState.addGameObject( AmbientLight )
 
     //Root node
-    const rootNode = this.gameState.addGameObject( this.randomRoomType(), {
+    const rootNode = this.gameState.addGameObject( SmallRoom, {
       position: { x: 0, y: 0, z: 0 },
       portalDirection: this.randomPortalDirection(),
       noInteriorDecor: true
@@ -36,7 +37,8 @@ class Map {
     const fromHall = fromNode && fromNode.roomType === RoomTypes.Hall
 
     return randomWeightedChoice([
-      { value: BigRoom, weight: 0.5 },
+      { value: BigRoom, weight: 0.35 },
+      { value: NoCeilingRoom, weight: 0.15 },
       { value: SmallRoom, weight: 0.4 },
       { value: Hall, weight: fromHall ? 0.5 : 0.3 },
     ])
