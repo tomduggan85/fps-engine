@@ -1,5 +1,5 @@
 FPS engine
-https://adoring-minsky-ddb179.netlify.com/
+  
 
 Asset credits:
 https://opengameart.org/content/seamless-industrial-textures

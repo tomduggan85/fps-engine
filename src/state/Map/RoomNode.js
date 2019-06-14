@@ -14,12 +14,14 @@ import CeilingTextures from './CeilingTextures'
 import FloorTextures from './FloorTextures'
 import OutdoorGroundTextures from './OutdoorGroundTextures'
 import { addRandomInteriorDecor } from './InteriorDecor'
+import { addRandomWallDecor } from './WallDecor'
 import {
   WALL_FRICTION,
   FLOOR_FRICTION
 } from './MapPhysics'
 import { createMaterial } from './Materials'
 import { generateGridPositions } from '../../shared/sceneUtils'
+import { addDoorTrim } from './DoorTrim'
 
 const ENABLE_ENEMIES = true
 
@@ -406,7 +408,11 @@ class MapNode extends GameObject {
   }
 
   addWallDecor() {
-    //TODO 
+    addRandomWallDecor( this )
+  }
+
+  addDoorTrim() {
+    addDoorTrim( this )
   }
 
   createSceneObject() {
@@ -428,6 +434,7 @@ class MapNode extends GameObject {
 
     this.addInteriorDecor()
     this.addWallDecor()
+    this.addDoorTrim()
 
     return this.floor
   }

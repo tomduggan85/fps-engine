@@ -30,7 +30,7 @@ class Map {
   }
 
   randomPortalDirection( toAvoid = null ) {
-    return randomChoice( without([ 'left', 'right', 'front' ], toAvoid ))
+    return randomChoice( without([ 'left', 'right', /*'front' */], toAvoid ))
   }
 
   randomRoomType( fromNode ) {
