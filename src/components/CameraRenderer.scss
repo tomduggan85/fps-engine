@@ -12,5 +12,7 @@
     width: 100% !important; 
     height: 100% !important;
     image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
   }
 }

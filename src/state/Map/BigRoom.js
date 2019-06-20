@@ -14,7 +14,7 @@ class BigRoom extends RoomNode {
   chooseDimensions() {
     this.length = randomBetween( 35, 60 )
     this.width = randomBetween( this.props.from ? this.props.from.width + 2 * wallThickness : 25, 45 )
-    this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 5, 10 )
+    this.height = randomBetween( this.props.from ? this.props.from.height + 2 * wallThickness : 5, 15 )
   }
 }
 

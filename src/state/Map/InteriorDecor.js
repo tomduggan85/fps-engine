@@ -84,7 +84,7 @@ export const addRandomInteriorDecor = ( roomNode ) => {
   const interiorDecorChoice = randomWeightedChoice([
     { value: 'columns', weight: roomForColumns ? 0.6 : 0 },
     { value: 'interior_box', weight: roomForInteriorBox ? 0.4 : 0 },
-    { value: 'nothing', weight: 0.2 },
+    { value: 'nothing', weight: 0.1 },
   ])
 
   if ( interiorDecorChoice === 'columns') {

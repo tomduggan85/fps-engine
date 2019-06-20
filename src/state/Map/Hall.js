@@ -41,10 +41,6 @@ class Hall extends RoomNode {
     //Override as no-op since there is not enough space
   }
 
-  addDoorTrim() {
-    //Override as no-op
-  }
-
   createPortalWallGeometry( width, height, direction ) {
     //Only create wall geometry if exiting to the left or right.  Otherwise, it's unnecessary
     if ( direction === 'left' || direction === 'right' ) {

@@ -21,9 +21,8 @@ import {
 } from './MapPhysics'
 import { createMaterial } from './Materials'
 import { generateGridPositions } from '../../shared/sceneUtils'
-import { addDoorTrim } from './DoorTrim'
 
-const ENABLE_ENEMIES = true
+const ENABLE_ENEMIES = false
 
 const PATROL_CHANCE = 0.5
 const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.5
@@ -32,7 +31,7 @@ const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
 export const wallThickness = 1
 
-class MapNode extends GameObject {
+class RoomNode extends GameObject {
 
   type = GameObjectTypes.Scenery
 
@@ -411,10 +410,6 @@ class MapNode extends GameObject {
     addRandomWallDecor( this )
   }
 
-  addDoorTrim() {
-    addDoorTrim( this )
-  }
-
   createSceneObject() {
     this.pickTexture( 'wallTexture', WallTextures, 0.2 )
     this.pickTexture( 'floorTexture', FloorTextures, 0.06 )
@@ -434,10 +429,9 @@ class MapNode extends GameObject {
 
     this.addInteriorDecor()
     this.addWallDecor()
-    this.addDoorTrim()
 
     return this.floor
   }
 }
 
-export default MapNode
+export default RoomNode

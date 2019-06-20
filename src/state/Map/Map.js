@@ -7,7 +7,7 @@ import SmallRoom from './SmallRoom'
 import Hall from './Hall'
 import RoomTypes from '../../shared/enum/RoomTypes'
 
-const DESIRED_BRANCH_LENGTH = 4
+const DESIRED_BRANCH_LENGTH = 7
 const FIRST_ROOM_WITH_ENEMIES = 3
 
 class Map {
@@ -30,7 +30,7 @@ class Map {
   }
 
   randomPortalDirection( toAvoid = null ) {
-    return randomChoice( without([ 'left', 'right', /*'front' */], toAvoid ))
+    return randomChoice( without([ 'left', 'right', 'front' ], toAvoid ))
   }
 
   randomRoomType( fromNode ) {
