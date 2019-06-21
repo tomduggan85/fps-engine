@@ -8,9 +8,9 @@ import { addDoorTrim, canHaveDoorTrim } from './DoorTrim'
 export const addRandomWallDecor = ( roomNode ) => {
 
   const wallDecorChoice = randomWeightedChoice([
-    { value: 'wall_ribs', weight: canHaveWallRibs( roomNode ) ? 10 : 0 },
+    { value: 'wall_ribs', weight: canHaveWallRibs( roomNode ) ? 3 : 0 },
+    { value: 'wall_bevel', weight: 2 },
     { value: 'door_trim', weight: canHaveDoorTrim( roomNode ) ? 1 : 0 },
-    { value: 'wall_bevel', weight: 100 },
     { value: 'nothing', weight: 0.5 },
   ])
 
