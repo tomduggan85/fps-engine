@@ -22,7 +22,7 @@ import {
 import { createMaterial } from './Materials'
 import { generateGridPositions } from '../../shared/sceneUtils'
 
-const ENABLE_ENEMIES = false
+const ENABLE_ENEMIES = true
 
 const PATROL_CHANCE = 0.5
 const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.5
