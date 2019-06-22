@@ -57,7 +57,9 @@ class Rocket extends BaseProjectile {
         if ( gameObject.type !== GameObjectTypes.Scenery ) {
           direction.y *= 0.25
         }
-        gameObject.sceneObject.applyCentralForce( direction.normalize().multiplyScalar( MAX_FORCE * inverseNormalizedDist ))
+        const offset = direction.clone()
+        const force = direction.normalize().multiplyScalar( MAX_FORCE * inverseNormalizedDist )
+        gameObject.sceneObject.applyForce( force, offset )
       }
     })
   }

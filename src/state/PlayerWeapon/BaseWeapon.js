@@ -8,6 +8,7 @@ import SpecialEffect, { EffectTypes } from '../SpecialEffect'
 
 const CAMERA_AIM_Y_OFFSET = 0.08;
 const CAMERA_Y_SPREAD_MULTIPLIER = 1.8; // Account for the fact that the viewport is wider than it is tall
+const BULLET_FORCE = 1000
 
 export default class BaseWeapon {
   
@@ -97,6 +98,13 @@ export default class BaseWeapon {
       if ( gameObject ) {
         if ( gameObject.components.health ) {
           gameObject.components.health.takeDamage( damage )
+        }
+
+        if ( gameObject.sceneObject.applyForce ) {
+          const forceVector = point.clone().sub( this.player.sceneObject.position ).normalize().multiplyScalar( BULLET_FORCE )
+          const offsetVector = point.clone()
+          gameObject.sceneObject.worldToLocal( offsetVector )
+          gameObject.sceneObject.applyCentralForce( forceVector, offsetVector )
         }
 
         const shiftedImpactPoint = point.clone().sub( this.player.sceneObject.position ).normalize()
