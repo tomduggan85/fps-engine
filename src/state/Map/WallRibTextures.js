@@ -13,6 +13,5 @@ export default [
   { weight: 1, value: { scale: 4, url: '/assets/textures/concrete2.jpg' }},
   { weight: 1, value: { scale: 4, url: '/assets/textures/concrete4.jpg' }},
   { weight: 1, value: { scale: 4, url: '/assets/textures/terminal_floor_4.jpg' }},
-  { weight: 1, value: { scale: 8, url: '/assets/textures/terminal_panel_8.jpg' }},
   { weight: 1, value: { scale: 4, url: '/assets/textures/terminal_wall_14.jpg' }},
 ]

@@ -81,14 +81,12 @@ const canHaveColumns = roomNode => roomNode.props.roomType !== RoomTypes.NoCeili
 
 const canHaveInteriorBox = roomNode => roomNode.props.roomType !== RoomTypes.NoCeiling && enoughSpace( roomNode, 22 )
 
-const canHaveBoxStacks = roomNode => roomNode.props.roomType !== RoomTypes.Hall && roomFitsAnyBoxes( roomNode )
-
 export const addRandomInteriorDecor = ( roomNode, gameState ) => {
 
   const interiorDecorChoice = randomWeightedChoice([
     { value: 'columns', weight: canHaveColumns( roomNode ) ? 0.6 : 0 },
     { value: 'interior_box', weight: canHaveInteriorBox( roomNode ) ? 0.4 : 0 },
-    { value: 'box_stacks', weight: canHaveBoxStacks( roomNode ) ? 0.8 : 0 },
+    { value: 'box_stacks', weight: roomFitsAnyBoxes( roomNode ) ? 100 : 0 },
     { value: 'nothing', weight: 0.1 },
   ])
 

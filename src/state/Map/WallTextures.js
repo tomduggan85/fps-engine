@@ -5,7 +5,7 @@ export default [
   { weight: 1, value: { scale: 8, url: '/assets/textures/metal_panel.jpg' }},
   { weight: 1, value: { scale: 8, url: '/assets/textures/iron_panel.jpg' }},
   { weight: 1, value: { scale: 8, url: '/assets/textures/iron_panel_2.jpg' }},
-  { weight: 1, value: { scale: 8, url: '/assets/textures/rust_panel.jpg' }},
+  { weight: 3, value: { scale: 8, url: '/assets/textures/rust_panel.jpg' }},
   { weight: 1, value: { scale: 8, url: '/assets/textures/corrugated.jpg' }},
   { weight: 1, value: { scale: 8, url: '/assets/textures/circuit_board_2.jpg' }},
   { weight: 1, value: { scale: 8, url: '/assets/textures/circuit_board_3.jpg' }},
