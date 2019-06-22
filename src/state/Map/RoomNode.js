@@ -25,7 +25,7 @@ import { generateGridPositions } from '../../shared/sceneUtils'
 const ENABLE_ENEMIES = true
 
 const PATROL_CHANCE = 0.5
-const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.5
+const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.75
 
 const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
@@ -37,7 +37,6 @@ class RoomNode extends GameObject {
 
   constructor( props ) {
     super( props )
-    this.containedGameObjects = []
     this.position = props.position
     this.roomType = props.roomType
     this.yaw = 0 /* Track this separately so the physics engine can't introduce rounding errors as node trees get large */
@@ -396,11 +395,11 @@ class RoomNode extends GameObject {
   }
 
   addInteriorDecor() {
-    if ( this.props.noCeiling || this.props.noInteriorDecor ) {
+    if ( this.props.noInteriorDecor ) {
       return
     }
 
-    const objects = addRandomInteriorDecor( this )
+    const objects = addRandomInteriorDecor( this, this.props.gameState )
     if ( objects ) {
       objects.forEach( object => this.containedGameObjects.push( object ))
     }
@@ -411,6 +410,8 @@ class RoomNode extends GameObject {
   }
 
   createSceneObject() {
+    this.containedGameObjects = []
+
     this.pickTexture( 'wallTexture', WallTextures, 0.2 )
     this.pickTexture( 'floorTexture', FloorTextures, 0.06 )
     this.pickTexture( 'ceilingTexture', CeilingTextures, 0.1 )

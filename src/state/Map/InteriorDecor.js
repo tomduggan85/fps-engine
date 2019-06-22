@@ -2,7 +2,6 @@
 
 import {
   randomWeightedChoice,
-  randomChoice,
   randomBetween
 } from '../../shared/mathUtils'
 import { WALL_FRICTION } from './MapPhysics'
@@ -10,6 +9,8 @@ import ColumnTextures from './ColumnTextures'
 import WallTextures from './WallTextures'
 import { createMaterial } from './Materials'
 import { generateGridPositions } from '../../shared/sceneUtils'
+import RoomTypes from '../../shared/enum/RoomTypes'
+import { addBoxStacks, roomFitsAnyBoxes } from './BoxStacks'
 
 const FIXED_COLUMN_COUNT_CHANCE = 0.5
 const FILL_ROOM_COLUMN_SPACING = 10
@@ -69,21 +70,25 @@ const addInteriorBox = roomNode => {
     new THREE.BoxGeometry( width, height, length ),
     createMaterial( texture.url, width / texture.scale, height / texture.scale, WALL_FRICTION ),
     0,
-  );
+  )
   box.position.set( 0, height / 2, 0 )
   roomNode.floor.add( box )
 }
 
 const enoughSpace = ( roomNode, minimumDimension ) => roomNode.width >= minimumDimension && roomNode.length >= minimumDimension
 
-export const addRandomInteriorDecor = ( roomNode ) => {
+const canHaveColumns = roomNode => roomNode.props.roomType !== RoomTypes.NoCeiling && enoughSpace( roomNode, 20 )
 
-  const roomForColumns = enoughSpace( roomNode, 20 )
-  const roomForInteriorBox = enoughSpace( roomNode, 22 )
+const canHaveInteriorBox = roomNode => roomNode.props.roomType !== RoomTypes.NoCeiling && enoughSpace( roomNode, 22 )
+
+const canHaveBoxStacks = roomNode => roomNode.props.roomType !== RoomTypes.Hall && roomFitsAnyBoxes( roomNode )
+
+export const addRandomInteriorDecor = ( roomNode, gameState ) => {
 
   const interiorDecorChoice = randomWeightedChoice([
-    { value: 'columns', weight: roomForColumns ? 0.6 : 0 },
-    { value: 'interior_box', weight: roomForInteriorBox ? 0.4 : 0 },
+    { value: 'columns', weight: canHaveColumns( roomNode ) ? 0.6 : 0 },
+    { value: 'interior_box', weight: canHaveInteriorBox( roomNode ) ? 0.4 : 0 },
+    { value: 'box_stacks', weight: canHaveBoxStacks( roomNode ) ? 0.8 : 0 },
     { value: 'nothing', weight: 0.1 },
   ])
 
@@ -92,5 +97,8 @@ export const addRandomInteriorDecor = ( roomNode ) => {
   }
   else if ( interiorDecorChoice === 'interior_box' ) {
     addInteriorBox( roomNode )
+  }
+  else if ( interiorDecorChoice === 'box_stacks' ) {
+    return addBoxStacks( roomNode, gameState )
   }
 }

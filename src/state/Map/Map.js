@@ -7,7 +7,7 @@ import SmallRoom from './SmallRoom'
 import Hall from './Hall'
 import RoomTypes from '../../shared/enum/RoomTypes'
 
-const DESIRED_BRANCH_LENGTH = 7
+const DESIRED_BRANCH_LENGTH = 5
 const FIRST_ROOM_WITH_ENEMIES = 3
 
 class Map {
@@ -39,8 +39,8 @@ class Map {
     return randomWeightedChoice([
       { value: BigRoom, weight: 0.35 },
       { value: NoCeilingRoom, weight: 0.15 },
-      { value: SmallRoom, weight: 0.4 },
-      { value: Hall, weight: fromHall ? 0.5 : 0.3 },
+      { value: SmallRoom, weight: 0.42 },
+      { value: Hall, weight: fromHall ? 0.45 : 0.3 },
     ])
   }
 
