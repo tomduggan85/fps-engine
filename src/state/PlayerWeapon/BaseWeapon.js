@@ -8,7 +8,7 @@ import SpecialEffect, { EffectTypes } from '../SpecialEffect'
 
 const CAMERA_AIM_Y_OFFSET = 0.08;
 const CAMERA_Y_SPREAD_MULTIPLIER = 1.8; // Account for the fact that the viewport is wider than it is tall
-const BULLET_FORCE = 1000
+const BULLET_FORCE = 1250
 
 export default class BaseWeapon {
   

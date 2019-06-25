@@ -86,7 +86,7 @@ export const addRandomInteriorDecor = ( roomNode, gameState ) => {
   const interiorDecorChoice = randomWeightedChoice([
     { value: 'columns', weight: canHaveColumns( roomNode ) ? 0.6 : 0 },
     { value: 'interior_box', weight: canHaveInteriorBox( roomNode ) ? 0.4 : 0 },
-    { value: 'box_stacks', weight: roomFitsAnyBoxes( roomNode ) ? 0.8 : 0 },
+    { value: 'box_stacks', weight: roomFitsAnyBoxes( roomNode ) ? 0.6 : 0 },
     { value: 'nothing', weight: 0.1 },
   ])
 

@@ -1,6 +1,6 @@
 /* global THREE */
 
-export const nearestRaycastGameObject = ( scene, raycast, ignoreTypes = [], ignoreDead = false ) => {
+export const nearestRaycastGameObject = ( scene, raycast, ignoreTypes = [], ignoreDead = false, ignoreGameObject = null ) => {
   const results = raycast
     .intersectObjects( scene.children, true )
     .filter( result => {
@@ -9,7 +9,8 @@ export const nearestRaycastGameObject = ( scene, raycast, ignoreTypes = [], igno
           !ignoreDead || 
           !result.object.gameObject.components.health || 
           !result.object.gameObject.components.health.isDead
-        )
+        ) &&
+        (!ignoreGameObject || result.object.gameObject !== ignoreGameObject )
     })
 
   return results.length && {

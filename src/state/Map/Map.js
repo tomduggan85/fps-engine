@@ -21,7 +21,8 @@ class Map {
     const rootNode = this.gameState.addGameObject( SmallRoom, {
       position: { x: 0, y: 0, z: 0 },
       portalDirection: this.randomPortalDirection(),
-      noInteriorDecor: true
+      noInteriorDecor: true,
+      forceAddDoor: true,
     })
     this.nodesCreatedCount = 1
 

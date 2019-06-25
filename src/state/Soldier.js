@@ -80,7 +80,7 @@ class Soldier extends Enemy {
       textureScale: [ 0.085, 0.0627 ],
       maxVelocity: 6,
       radius: 1.55,
-      startingHealth: 5//30,
+      startingHealth: 15//30,
     })
   }
 

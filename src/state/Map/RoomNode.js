@@ -21,11 +21,14 @@ import {
 } from './MapPhysics'
 import { createMaterial } from './Materials'
 import { generateGridPositions } from '../../shared/sceneUtils'
+import Door from './Door'
+import RoomTypes from '../../shared/enum/RoomTypes'
 
 const ENABLE_ENEMIES = true
 
 const PATROL_CHANCE = 0.5
 const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.75
+const DOOR_CHANCE = 1//0.25
 
 const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
@@ -89,23 +92,25 @@ class RoomNode extends GameObject {
     this.setupPortals()
   }
 
-  getPortalLocalPosition( portalDirection ) {
+  getPortalLocalPosition( portalDirection, accountForWallThickness = false ) {
     const portal = this.portals[ portalDirection ]
     if ( !portal ) {
       return
     }
 
+    const wallThicknessAdjustment = accountForWallThickness ? wallThickness / 2 : 0
+
     switch( portalDirection ) {
-      case 'front': return { x: -this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: -this.length / 2 }
-      case 'rear': return { x: -this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: this.length / 2 }
-      case 'left': return { x: -this.width / 2, y: 0, z: this.length / 2 - portal.positionX - portal.width / 2 }
-      case 'right': return { x: this.width / 2, y: 0, z: this.length / 2 - portal.positionX - portal.width / 2 - wallThickness }
+      case 'front': return { x: wallThicknessAdjustment - this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: -this.length / 2 }
+      case 'rear': return { x: wallThicknessAdjustment - this.width / 2 + portal.positionX + portal.width / 2, y: 0, z: this.length / 2 }
+      case 'left': return { x: -this.width / 2, y: 0, z: -wallThicknessAdjustment + this.length / 2 - portal.positionX - portal.width / 2 }
+      case 'right': return { x: this.width / 2, y: 0, z: wallThicknessAdjustment + this.length / 2 - portal.positionX - portal.width / 2 - wallThickness }
       default: return null
     }
   }
 
-  getPortalWorldPosition( portalDirection ) {
-    const localPosition = this.getPortalLocalPosition( portalDirection )
+  getPortalWorldPosition( portalDirection, accountForWallThickness = false ) {
+    const localPosition = this.getPortalLocalPosition( portalDirection, accountForWallThickness )
     if ( localPosition ) {
       this.sceneObject.updateMatrixWorld( true )
       return this.sceneObject.localToWorld( new THREE.Vector3( localPosition.x, localPosition.y, localPosition.z ))
@@ -409,6 +414,21 @@ class RoomNode extends GameObject {
     addRandomWallDecor( this )
   }
 
+  maybeAddDoor() {
+    const roomCanHaveDoor = ![ RoomTypes.Hall, RoomTypes.NoCeiling ].includes( this.props.roomType )
+    if ( roomCanHaveDoor && ( this.props.forceAddDoor || Math.random() <= DOOR_CHANCE )) {
+      const portalDirection = ['left', 'right', 'front'].find( direction => !!this.portals[ direction ] )
+      const portal = this.portals[ portalDirection ]
+
+      const door = this.gameState.addGameObject( Door, {
+        roomNode: this,
+        portal,
+        portalDirection
+      })
+      this.containedGameObjects.push( door )
+    }
+  }
+
   createSceneObject() {
     this.containedGameObjects = []
 
@@ -430,6 +450,7 @@ class RoomNode extends GameObject {
 
     this.addInteriorDecor()
     this.addWallDecor()
+    this.maybeAddDoor()
 
     return this.floor
   }

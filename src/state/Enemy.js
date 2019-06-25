@@ -13,7 +13,7 @@ const FRICTION = 1
 const RESTITUTION = 0
 const SHOW_DEBUG_VOLUMES = false
 
-const MASS = 3
+const MASS = 2.5
 const WALK_STRENGTH = 10
 
 class Enemy extends GameObject {

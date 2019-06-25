@@ -174,11 +174,11 @@ class AiLogic {
     const raycast = new THREE.Raycaster(
       origin,
       toPlayer, //normalized direction
-      this.radius * 1.1, //near
+      0, //near
       range //far
     )
 
-    const { gameObject } = nearestRaycastGameObject( this.scene, raycast, [], true )
+    const { gameObject } = nearestRaycastGameObject( this.scene, raycast, [], true, this.parent )
 
     const canSeePlayer = gameObject === this.player
 
