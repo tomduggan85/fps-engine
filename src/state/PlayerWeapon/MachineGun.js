@@ -56,6 +56,7 @@ export default class MachineGun extends BaseWeapon {
       ...props,
       animationDefs,
       imageUrl: '/assets/images/machine_gun.png',
+      pickupImageUrl: '/assets/images/machine_gun_pickup.png',
       alertNearbyEnemyRange: 60,
     })
   }

@@ -24,6 +24,7 @@ class Map {
       noInteriorDecor: true,
       forceAddDoor: true,
     })
+    rootNode.markAsPositioned()
     this.nodesCreatedCount = 1
 
     this.onEnterNode( rootNode )

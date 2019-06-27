@@ -2,7 +2,6 @@
 
 import GameObject from './GameObject'
 import GameObjectTypes from '../shared/enum/GameObjectTypes'
-import { action } from 'mobx'
 
 const FRICTION = 1
 const RESTITUTION = 0.5
@@ -14,34 +13,15 @@ class BoxScenery extends GameObject {
 
   createSceneObject() {
     const {
-      textureUrl,
       size,
       position,
       rotation,
-      textureRepeat = [ 1, 1 ],
-      friction,
-      restitution,
       mass = 0,
     } = this.props
-    
-    const texture = new THREE.TextureLoader().load( textureUrl )
-    texture.wrapS = THREE.RepeatWrapping
-    texture.wrapT = THREE.RepeatWrapping
-    texture.magFilter = THREE.NearestFilter //Pixelate!
-    texture.minFilter = THREE.NearestMipMapLinearFilter //Pixelate!
-    texture.repeat.set( textureRepeat[ 0 ], textureRepeat[ 1 ] )
-
-    const material = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({
-        map: texture
-      }),
-      friction || FRICTION,
-      restitution || RESTITUTION,
-    );
 
     const box = new Physijs.BoxMesh(
       new THREE.BoxGeometry( size.x, size.y, size.z ),
-      material,
+      this.createMaterials(),
       mass //Zero mass means immovable object
     );
     box.position.set( position.x, position.y, position.z )
@@ -52,10 +32,31 @@ class BoxScenery extends GameObject {
     return box
   }
  
-  @action
-  step( deltaTime ) {
-    super.step( deltaTime )
-  } 
+  createMaterials() {
+    const {
+      textureUrl,
+      textureRepeat = [ 1, 1 ],
+      friction,
+      restitution,
+    } = this.props
+
+    const textures = Array.isArray( textureUrl ) ? textureUrl : Array( 6 ).fill( textureUrl )
+
+    return textures.map( texture => {
+      const map = new THREE.TextureLoader().load( texture )
+      map.wrapS = THREE.RepeatWrapping
+      map.wrapT = THREE.RepeatWrapping
+      map.magFilter = THREE.NearestFilter //Pixelate!
+      map.minFilter = THREE.NearestMipMapLinearFilter //Pixelate!
+      map.repeat.set( textureRepeat[ 0 ], textureRepeat[ 1 ] )
+
+      return Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map }),
+        friction || FRICTION,
+        restitution || RESTITUTION,
+      );
+    })
+  }
 }
 
 export default BoxScenery

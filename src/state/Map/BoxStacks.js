@@ -148,7 +148,7 @@ export const addBoxStacks = ( roomNode, gameState ) => {
       z: -roomNode.length / 2 + roomPositionsToUse[ i ].z * roomNode.length, 
     }
 
-    positions.forEach( position => {
+    positions.forEach( async position => {
       
       const box = gameState.addGameObject( BoxScenery, {
         position: { x: 0, y: -10, z: 0 }, /* initially place underneath all rooms to not interfere with other objects before it's positioned */
@@ -161,18 +161,16 @@ export const addBoxStacks = ( roomNode, gameState ) => {
         restitution: 0.5
       })
 
-      setTimeout(() => {
-        /* Position the boxes after the first step, which positions the map */
-        const worldPos = roomNode.floor.localToWorld( new THREE.Vector3(
-          position.x + roomPosition.x,
-          position.y,
-          position.z + roomPosition.z
-        ))
-        box.sceneObject.position.set( worldPos.x, worldPos.y, worldPos.z )
-        box.sceneObject.__dirtyPosition = true
-      }, 0)
-
       boxes.push( box )
+
+      await roomNode.isPositioned
+      const worldPos = roomNode.floor.localToWorld( new THREE.Vector3(
+        position.x + roomPosition.x,
+        position.y,
+        position.z + roomPosition.z
+      ))
+      box.sceneObject.position.set( worldPos.x, worldPos.y, worldPos.z )
+      box.sceneObject.__dirtyPosition = true
     })
   })
 

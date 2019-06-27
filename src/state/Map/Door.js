@@ -10,6 +10,8 @@ const CHECK_OPEN_RATE = 300
 const OPEN_DISTANCE = 7
 const DOOR_OPEN_RATE = 0.008
 
+const DOOR_EDGE_TEXTURE = '/assets/textures/door_jamb_1_r.jpg'
+
 const OPEN_STATES = {
   closed: 'closed',
   open: 'open', 
@@ -18,18 +20,26 @@ const OPEN_STATES = {
 
 class Door extends BoxScenery {
   constructor( props ) {
-    const { portal } = props
+    const { portal, roomNode } = props
+    const textureUrl = randomWeightedChoice( DoorTextures ).url
     super({
       position: { x: 0, y: -10, z: 0 }, /* initially place underneath all rooms to not interfere with other objects before it's positioned */
-      textureUrl: randomWeightedChoice( DoorTextures ).url, 
+      textureUrl: [
+        DOOR_EDGE_TEXTURE,
+        DOOR_EDGE_TEXTURE,
+        DOOR_EDGE_TEXTURE,
+        DOOR_EDGE_TEXTURE,
+        textureUrl,
+        textureUrl,
+      ], 
       textureRepeat: [ 1, 1 ],
-      size: { x: portal.width - wallThickness, y: portal.height + wallThickness, z: DOOR_THICKNESS },
+      size: { x: portal.width - wallThickness, y: portal.height, z: DOOR_THICKNESS },
       ...props
     })
     this.player = props.gameState.player
     this.openState = OPEN_STATES.closed
 
-    setTimeout( this.setupInitialPosition, 0 ) /* Position the door after the room is positioned */
+    roomNode.isPositioned.then( this.setupInitialPosition )
   }
 
   setupInitialPosition = () => {
@@ -40,7 +50,7 @@ class Door extends BoxScenery {
     } = this.props
 
     this.props.position = roomNode.getPortalWorldPosition( portalDirection, true /* accountForWallThickness */ )
-    this.props.position.y += size.y / 2
+    this.props.position.y += size.y / 2 + wallThickness / 2
 
     this.sceneObject.position.set( this.props.position.x, this.props.position.y, this.props.position.z )
     this.sceneObject.rotation.y = roomNode.yaw
@@ -75,7 +85,7 @@ class Door extends BoxScenery {
       this.sceneObject.position.y += DOOR_OPEN_RATE * deltaTime
       this.sceneObject.__dirtyPosition = true
       this.sceneObject.__dirtyRotation = true
-      if (this.sceneObject.position.y >= this.props.position.y + this.props.size.y - wallThickness ) {
+      if (this.sceneObject.position.y >= this.props.position.y + this.props.size.y - 0.5 * wallThickness ) {
         this.openState = OPEN_STATES.open
       }
     }

@@ -1,3 +1,14 @@
+
+$text-bg-1: -webkit-linear-gradient(top, #000 0%, #000 50%, #222 51%, #222 100%);
+$text-bg-2: -webkit-linear-gradient(top, #000 0%, #000 30%, #222 31%, #222 60%, #000 61%, #000 100%);
+$text-bg-3: -webkit-linear-gradient(top, #ed321c 0%, #ed321c 50%, #a62a1c 51%, #a62a1c 100%);
+
+@mixin gradientText($gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .HUD {
   position: absolute;
   top: 0;
@@ -11,15 +22,81 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 110px;
-    background: #222;
+    height: 117px;
+    background: url('/assets/images/hud_rust_4.jpg');
+    border-top: 3px solid rgba(#000, 0.25);
+    background-size: 30%;
+    background-position: 0 70%;
+    image-rendering: pixelated;
     color: #fff;
-    padding: 20px 40px;
+    padding: 10px 0;
     box-sizing: border-box;
 
-    .stat {
-      font-size: 20px;
-      margin-bottom: 5px;
+    .hud-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .stat {
+        text-transform: uppercase;
+        box-sizing: border-box;
+        font-size: 15px;
+        padding: 5px;
+        border: 5px solid rgba(#000, 0.4);
+        border-bottom-color: rgba(#000, 0.25);
+        border-right-color: rgba(#000, 0.25);
+        margin: 0 25px;
+        /*background: url('/assets/images/hud_rust_5.jpg');
+        background-size: 200%;*/
+        background: url('/assets/images/hud_rust_4_darker.jpg');
+        background-size: 300%;
+        background-position: 0 45%;
+        width: 150px;
+        height: 100%;
+        text-align: center;
+        text-shadow: 2px 2px 0px #000;
+        color: #822015;
+
+        .stat-value {
+          margin-top: 15px;
+          font-size: 45px;
+          @include gradientText($text-bg-1);
+          text-shadow: none;
+          font-weight: bold;
+        }
+      }
+
+      .weapon-slots {
+        height: 100%;
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+
+        .weapon-slot {
+          border: 4px solid rgba(#000, 0.4);
+          border-bottom-color: rgba(#000, 0.25);
+          border-right-color: rgba(#000, 0.25);
+          background: url('/assets/images/hud_rust_4_darker.jpg');
+          background-size: 300%;
+          background-position: 0 45%;
+          width: 100px;
+          height: 36px;
+          margin-left: 5px;
+
+          &:nth-child(2n + 1) {
+            margin-bottom: 5px;
+          }
+
+          img {
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+          }
+        }
+      }
     }
   }
 

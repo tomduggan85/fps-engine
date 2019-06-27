@@ -61,6 +61,7 @@ export default class RocketLauncher extends BaseWeapon {
       ...props,
       animationDefs,
       imageUrl: '/assets/images/rocket_launcher.png',
+      pickupImageUrl: '/assets/images/rocket_launcher_pickup.png',
       alertNearbyEnemyRange: 80,
     })
   }

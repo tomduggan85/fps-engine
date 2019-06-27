@@ -28,7 +28,7 @@ const ENABLE_ENEMIES = true
 
 const PATROL_CHANCE = 0.5
 const OUTDOOR_GROUND_TEXTURE_CHANCE = 0.75
-const DOOR_CHANCE = 1//0.25
+const DOOR_CHANCE = 0.4
 
 const PORTAL_EDGE_TEXTURE = '/assets/textures/door_jamb_1.jpg'
 
@@ -160,6 +160,7 @@ class RoomNode extends GameObject {
 
     node.sceneObject.__dirtyPosition = true
     node.sceneObject.__dirtyRotation = true
+    node.markAsPositioned()
     return node
   }
 
@@ -189,15 +190,11 @@ class RoomNode extends GameObject {
     }
     super.remove()
   }
-
-  step() {
-    if ( ENABLE_ENEMIES && this.props.includeEnemies && !this.hasAddedEnemies ) {
-      /* Done on first step to ensure that this room position has been properly set by it's parent node. */
-      this.addEnemies()
-    }
-  }
   
-  addEnemies() {
+  addEnemies = () => {
+    if ( !ENABLE_ENEMIES || !this.props.includeEnemies ) {
+      return
+    }
 
     const positions = generateGridPositions({
       width: this.width,
@@ -213,8 +210,6 @@ class RoomNode extends GameObject {
       })
       this.containedGameObjects.push( enemy )
     })
-    
-    this.hasAddedEnemies = true
   }
 
   getMaxPortalWidth() {
@@ -429,8 +424,11 @@ class RoomNode extends GameObject {
     }
   }
 
+  markAsPositioned = () => this._isPositionedResolver()
+
   createSceneObject() {
     this.containedGameObjects = []
+    this.isPositioned = new Promise( resolve => this._isPositionedResolver = resolve )
 
     this.pickTexture( 'wallTexture', WallTextures, 0.2 )
     this.pickTexture( 'floorTexture', FloorTextures, 0.06 )
@@ -451,6 +449,8 @@ class RoomNode extends GameObject {
     this.addInteriorDecor()
     this.addWallDecor()
     this.maybeAddDoor()
+
+    this.isPositioned.then(() => this.addEnemies())
 
     return this.floor
   }

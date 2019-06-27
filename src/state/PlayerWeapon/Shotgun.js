@@ -67,6 +67,7 @@ export default class Shotgun extends BaseWeapon {
       ...props,
       animationDefs,
       imageUrl: '/assets/images/shotgun.png',
+      pickupImageUrl: '/assets/images/shotgun_pickup.png',
       alertNearbyEnemyRange: 60,
     })
   }

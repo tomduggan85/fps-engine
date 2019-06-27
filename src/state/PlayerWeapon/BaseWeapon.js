@@ -19,10 +19,14 @@ export default class BaseWeapon {
   imageUrl = null
 
   @observable
+  pickupImageUrl = null
+
+  @observable
   canAttack = true
 
   constructor( props ) {
     this.imageUrl = props.imageUrl
+    this.pickupImageUrl = props.pickupImageUrl
     this.animationDefs = props.animationDefs
     this.ammo = props.ammo
     this.player = props.player
