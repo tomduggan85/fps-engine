@@ -20,3 +20,7 @@ https://opengameart.org/content/xonotic-skyboxes
 http://www.textures4photoshop.com/tex/metal/
 https://soundimage.org/txr-sci-fi/
 http://terminal26.de/
+https://www.1001fonts.com/velekom-font.html
+https://www.1001fonts.com/surgeon-font.html
+https://www.1001fonts.com/terminal-grotesque-font.html
+https://www.1001fonts.com/exepixelperfect-font.html

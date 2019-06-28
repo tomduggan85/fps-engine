@@ -40,7 +40,7 @@ class Map {
 
     return randomWeightedChoice([
       { value: BigRoom, weight: 0.35 },
-      { value: NoCeilingRoom, weight: 0.15 },
+      { value: NoCeilingRoom, weight: 0.25 },
       { value: SmallRoom, weight: 0.42 },
       { value: Hall, weight: fromHall ? 0.45 : 0.3 },
     ])

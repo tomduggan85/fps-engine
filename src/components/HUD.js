@@ -21,7 +21,7 @@ class HUD extends React.Component {
   }
 
   renderWeaponSlots() {
-    const { weapons } = this.props.player
+    const { weapons, currentWeaponIndex } = this.props.player
 
     return (
       <div className='weapon-slots'>
@@ -30,9 +30,14 @@ class HUD extends React.Component {
           return (
             <div
               key={`weapon-slot-${ i }`}
-              className='weapon-slot'
+              className={classnames( 'weapon-slot', { selected: i === currentWeaponIndex })}
             >
-              {weapon && <img src={weapon.pickupImageUrl} />}
+              {weapon && (
+                <>
+                  <span className='key'>{i+1}</span>
+                  <img src={weapon.pickupImageUrl} alt=''/>
+                </>
+              )}
             </div>
           )
         })}
@@ -49,11 +54,7 @@ class HUD extends React.Component {
       }
     } = this.props.player.components
 
-    const {
-      currentWeapon,
-      killCount,
-      weapons,
-    } = this.props.player
+    const { currentWeapon, killCount } = this.props.player
 
     return (
       <div className='HUD'>
@@ -62,7 +63,7 @@ class HUD extends React.Component {
           {currentWeapon && <PlayerWeaponRenderer weapon={currentWeapon} />}
           <div className='hud-content'>
             {this.renderStat( 'Health', currentHealth )}
-            {currentWeapon && this.renderStat( 'Ammo', currentWeapon.ammo )}
+            {this.renderStat( 'Ammo', currentWeapon ? currentWeapon.ammo : '' )}
             {this.renderStat( 'Kills', killCount )}
             {this.renderWeaponSlots()}
           </div>

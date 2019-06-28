@@ -1,13 +1,14 @@
 
-$text-bg-1: -webkit-linear-gradient(top, #000 0%, #000 50%, #222 51%, #222 100%);
+$text-bg-1: -webkit-linear-gradient(top, #000 0%, #000 40%, #222 51%, #222 100%);
 $text-bg-2: -webkit-linear-gradient(top, #000 0%, #000 30%, #222 31%, #222 60%, #000 61%, #000 100%);
-$text-bg-3: -webkit-linear-gradient(top, #ed321c 0%, #ed321c 50%, #a62a1c 51%, #a62a1c 100%);
 
 @mixin gradientText($gradient) {
   background: $gradient;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+$accent: lighten(#822015, 5%);
 
 .HUD {
   position: absolute;
@@ -24,7 +25,7 @@ $text-bg-3: -webkit-linear-gradient(top, #ed321c 0%, #ed321c 50%, #a62a1c 51%, #
     bottom: 0;
     height: 117px;
     background: url('/assets/images/hud_rust_4.jpg');
-    border-top: 3px solid rgba(#000, 0.25);
+    border-top: 3px solid rgba(#fff, 0.2);
     background-size: 30%;
     background-position: 0 70%;
     image-rendering: pixelated;
@@ -42,12 +43,13 @@ $text-bg-3: -webkit-linear-gradient(top, #ed321c 0%, #ed321c 50%, #a62a1c 51%, #
       .stat {
         text-transform: uppercase;
         box-sizing: border-box;
-        font-size: 15px;
-        padding: 5px;
+        font-size: 28px;
+        line-height: 15px;
+        padding: 2px;
         border: 5px solid rgba(#000, 0.4);
-        border-bottom-color: rgba(#000, 0.25);
-        border-right-color: rgba(#000, 0.25);
-        margin: 0 25px;
+        border-bottom-color: rgba(#fff, 0.25);
+        border-right-color: rgba(#fff, 0.25);
+        margin: 0 5px;
         /*background: url('/assets/images/hud_rust_5.jpg');
         background-size: 200%;*/
         background: url('/assets/images/hud_rust_4_darker.jpg');
@@ -57,43 +59,64 @@ $text-bg-3: -webkit-linear-gradient(top, #ed321c 0%, #ed321c 50%, #a62a1c 51%, #
         height: 100%;
         text-align: center;
         text-shadow: 2px 2px 0px #000;
-        color: #822015;
+        color: $accent;
 
         .stat-value {
-          margin-top: 15px;
-          font-size: 45px;
+          margin-top: 0px;
+          font-size: 70px;
           @include gradientText($text-bg-1);
           text-shadow: none;
           font-weight: bold;
+          font-family: terminal-grotesque;
+          line-height: 1;
         }
       }
 
       .weapon-slots {
         height: 100%;
-        width: 200px;
+        width: 390px;
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
+        margin: 0 30px;
 
         .weapon-slot {
           border: 4px solid rgba(#000, 0.4);
-          border-bottom-color: rgba(#000, 0.25);
-          border-right-color: rgba(#000, 0.25);
+          border-bottom-color: rgba(#fff, 0.25);
+          border-right-color: rgba(#fff, 0.25);
           background: url('/assets/images/hud_rust_4_darker.jpg');
           background-size: 300%;
           background-position: 0 45%;
-          width: 100px;
-          height: 36px;
-          margin-left: 5px;
+          width: 130px;
+          height: 45px;
+          margin-right: 3px;
+          position: relative;
+          padding: 1px 0;
+          box-sizing: border-box;
+
+          &.selected {
+            border: 4px solid $accent;
+          }
 
           &:nth-child(2n + 1) {
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+          }
+
+          .key {
+            position: absolute;
+            font-size: 18px;
+            line-height: 10px;
+            top: 2px;
+            left: 2px;
+            text-shadow: 1px 1px 0px #000;
           }
 
           img {
-            width: 100%;
-            height: auto;
+            display: block;
+            width: auto;
+            height: 100%;
             image-rendering: pixelated;
+            margin: 0 auto;
           }
         }
       }

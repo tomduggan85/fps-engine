@@ -1,7 +1,22 @@
 
 @font-face {
-  font-family: 'PressStart2P';
-  src: url(./fonts/PressStart2P.ttf) format('truetype');
+  font-family: 'surgeon';
+  src: url(./fonts/surgeon.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'terminal-grotesque';
+  src: url(./fonts/terminal-grotesque.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Velekom';
+  src: url(./fonts/Velekom.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'EXEPixelPerfect';
+  src: url(./fonts/EXEPixelPerfect.ttf) format('truetype');
 }
 
 body {
@@ -16,7 +31,7 @@ body {
 }
 
 * {
-  font-family: 'PressStart2P';
+  font-family: 'EXEPixelPerfect';
 }
 
 code {
