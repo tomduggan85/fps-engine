@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react'
 import CameraRenderer from './CameraRenderer'
 import PlayerInputArea from './PlayerInputArea'
 import HUD from './HUD'
+import GameInfo from './GameInfo'
 
 @inject( 'gameState' )
 @observer
@@ -25,11 +26,14 @@ class GameRenderer extends React.Component {
     } = this.props.gameState
 
     return (
-      <div className='GameRenderer'>
-        <CameraRenderer camera={camera} />
-        <PlayerInputArea camera={camera} player={player} />
-        <HUD player={player} />
-      </div>
+      <>
+        <div className='GameRenderer'>
+          <CameraRenderer camera={camera} />
+          <PlayerInputArea camera={camera} player={player} />
+          <HUD player={player} />
+        </div>
+        <GameInfo />
+      </>
     )
   }
 }

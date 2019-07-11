@@ -7,7 +7,5 @@ body {
   display: block;
   margin: 0 auto;
   width: 80vw;
-  height: 100vh;
   max-width: 1400px;
-  max-height: 900px;
 }

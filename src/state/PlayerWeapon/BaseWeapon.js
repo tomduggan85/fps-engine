@@ -5,10 +5,13 @@ import UiAnimation from '../components/UiAnimation'
 import { nearestRaycastGameObject } from '../../shared/sceneUtils'
 import GameObjectTypes from '../../shared/enum/GameObjectTypes'
 import SpecialEffect, { EffectTypes } from '../SpecialEffect'
+import { randomBetween } from '../../shared/mathUtils'
 
 const CAMERA_AIM_Y_OFFSET = 0.08;
 const CAMERA_Y_SPREAD_MULTIPLIER = 1.8; // Account for the fact that the viewport is wider than it is tall
 const BULLET_FORCE = 1250
+const ENEMY_HIT_EFFECT_SPREAD = 0.25
+const ENEMY_HIT_EFFECT_COUNT = 3
 
 export default class BaseWeapon {
   
@@ -112,12 +115,22 @@ export default class BaseWeapon {
         }
 
         const shiftedImpactPoint = point.clone().sub( this.player.sceneObject.position ).normalize()
-        const effectType = gameObject.type === GameObjectTypes.Enemy ? EffectTypes.EnemyHit : EffectTypes.Sparks
+        const hitEnemy = gameObject.type === GameObjectTypes.Enemy
+        const effectType = hitEnemy ? EffectTypes.EnemyHit : EffectTypes.Sparks
+        const effectCount = hitEnemy ? ENEMY_HIT_EFFECT_COUNT : 1
 
-        this.gameState.addGameObject( SpecialEffect, {
-          position: point.sub( shiftedImpactPoint ),
-          effectType,
-        })
+        for ( let i = 0; i < effectCount; i++ ) {
+          const position = point.clone().sub( shiftedImpactPoint )
+          if ( i > 0 ) {
+            position.x += randomBetween( -ENEMY_HIT_EFFECT_SPREAD, ENEMY_HIT_EFFECT_SPREAD )
+            position.y += randomBetween( -ENEMY_HIT_EFFECT_SPREAD, ENEMY_HIT_EFFECT_SPREAD )
+            position.z += randomBetween( -ENEMY_HIT_EFFECT_SPREAD, ENEMY_HIT_EFFECT_SPREAD )
+          }
+          this.gameState.addGameObject( SpecialEffect, {
+            position,
+            effectType,
+          })
+        }
       }
     }
   }

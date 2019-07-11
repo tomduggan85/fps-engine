@@ -24,10 +24,7 @@ $accent: lighten(#822015, 5%);
     right: 0;
     bottom: 0;
     height: 117px;
-    background: url('/assets/images/hud_rust_4.jpg');
     border-top: 3px solid rgba(#fff, 0.2);
-    background-size: 30%;
-    background-position: 0 70%;
     image-rendering: pixelated;
     color: #fff;
     padding: 10px 0;
@@ -50,11 +47,6 @@ $accent: lighten(#822015, 5%);
         border-bottom-color: rgba(#fff, 0.25);
         border-right-color: rgba(#fff, 0.25);
         margin: 0 5px;
-        /*background: url('/assets/images/hud_rust_5.jpg');
-        background-size: 200%;*/
-        background: url('/assets/images/hud_rust_4_darker.jpg');
-        background-size: 300%;
-        background-position: 0 45%;
         width: 150px;
         height: 100%;
         text-align: center;
@@ -84,9 +76,6 @@ $accent: lighten(#822015, 5%);
           border: 4px solid rgba(#000, 0.4);
           border-bottom-color: rgba(#fff, 0.25);
           border-right-color: rgba(#fff, 0.25);
-          background: url('/assets/images/hud_rust_4_darker.jpg');
-          background-size: 300%;
-          background-position: 0 45%;
           width: 130px;
           height: 45px;
           margin-right: 3px;
@@ -146,5 +135,165 @@ $accent: lighten(#822015, 5%);
   .dead-overlay {
     background: rgba(#000, 0.8);
     transition-duration: 0.8s;
+  }
+
+  &.metal-theme {
+    .bottom-ui {
+      background: url('/assets/images/hud_metal_1.jpg');
+      background-size: 30%;
+      background-position: 0 70%;
+    }
+
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+  }
+
+  &.rust-theme-1 {
+
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 70%;
+    }
+
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+  }
+
+  &.rust-theme-2 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 30%;
+    }
+    
+    .stat, .weapon-slot {
+      background: url('/assets/images/hud_rust_5.jpg');
+      background-size: 200%;
+    }
+  }
+
+  &.rust-theme-3 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_2.jpg');
+      background-size: 30%;
+      background-position: 0 30%;
+    }
+    
+    .stat, .weapon-slot {
+      background: url('/assets/images/hud_rust_5.jpg');
+      background-size: 200%;
+    }
+  }
+
+  &.rust-theme-4 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_5.jpg');
+      background-size: 30%;
+      background-position: 0 30%;
+    }
+    
+    .stat, .weapon-slot {
+      background: url('/assets/images/hud_rust_5.jpg');
+      background-size: 200%;
+    }
+  }
+
+  &.rust-theme-5 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 30%;
+    }
+    
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+  }
+
+  &.rust-theme-6 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 40%;
+    }
+    
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+  }
+
+  &.rust-theme-7 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 50%;
+    }
+    
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+  }
+
+  &.rust-theme-8 {
+    .bottom-ui {
+      background: url('/assets/images/hud_rust_4.jpg');
+      background-size: 30%;
+      background-position: 0 30%;
+    }
+    
+    .weapon-slot {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
+
+    .stat {
+      background: url('/assets/images/hud_rust_4_darker.jpg');
+      background-size: 300%;
+      background-position: 0 45%;
+    }
   }
 }

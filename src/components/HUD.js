@@ -3,8 +3,10 @@ import './HUD.scss'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import PlayerWeaponRenderer from './PlayerWeaponRenderer'
+import WeaponSlots from './WeaponSlots'
 
-const WEAPON_SLOTS = 6
+
+const THEME = 'rust-theme-1' /* rust-theme-1 through rust-theme-8, metal-theme too */
 
 @observer
 class HUD extends React.Component {
@@ -16,31 +18,6 @@ class HUD extends React.Component {
         <div className='stat-value'>
           {value}
         </div>
-      </div>
-    )
-  }
-
-  renderWeaponSlots() {
-    const { weapons, currentWeaponIndex } = this.props.player
-
-    return (
-      <div className='weapon-slots'>
-        {Array(WEAPON_SLOTS).fill(1).map(( _, i ) => {
-          const weapon = weapons[i]
-          return (
-            <div
-              key={`weapon-slot-${ i }`}
-              className={classnames( 'weapon-slot', { selected: i === currentWeaponIndex })}
-            >
-              {weapon && (
-                <>
-                  <span className='key'>{i+1}</span>
-                  <img src={weapon.pickupImageUrl} alt=''/>
-                </>
-              )}
-            </div>
-          )
-        })}
       </div>
     )
   }
@@ -57,7 +34,7 @@ class HUD extends React.Component {
     const { currentWeapon, killCount } = this.props.player
 
     return (
-      <div className='HUD'>
+      <div className={classnames( 'HUD', THEME )}>
         <div className={classnames('overlay damage-overlay', { isActive: isTakingDamage })} />
         <div className='bottom-ui'>
           {currentWeapon && <PlayerWeaponRenderer weapon={currentWeapon} />}
@@ -65,7 +42,7 @@ class HUD extends React.Component {
             {this.renderStat( 'Health', currentHealth )}
             {this.renderStat( 'Ammo', currentWeapon ? currentWeapon.ammo : '' )}
             {this.renderStat( 'Kills', killCount )}
-            {this.renderWeaponSlots()}
+            <WeaponSlots player={this.props.player} />
           </div>
         </div>
         <div className={classnames('overlay dead-overlay', { isActive: isDead })} />

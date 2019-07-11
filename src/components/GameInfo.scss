@@ -1,0 +1,38 @@
+.game-info {
+  color: #ccc;
+  font-size: 20px;
+  padding: 50px;
+  position: relative;
+
+  ul {
+    list-style-type: none;
+    padding: 0 10px 10px;
+  }
+
+  h3 {
+    font-size: 25px;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .scroll-chevron {
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    transform: rotate(-90deg);
+    font-size: 40px;
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 5px;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
