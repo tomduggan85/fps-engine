@@ -5,9 +5,6 @@ import classnames from 'classnames'
 import PlayerWeaponRenderer from './PlayerWeaponRenderer'
 import WeaponSlots from './WeaponSlots'
 
-
-const THEME = 'rust-theme-1' /* rust-theme-1 through rust-theme-8, metal-theme too */
-
 @observer
 class HUD extends React.Component {
 
@@ -34,7 +31,7 @@ class HUD extends React.Component {
     const { currentWeapon, killCount } = this.props.player
 
     return (
-      <div className={classnames( 'HUD', THEME )}>
+      <div className='HUD'>
         <div className={classnames('overlay damage-overlay', { isActive: isTakingDamage })} />
         <div className='bottom-ui'>
           {currentWeapon && <PlayerWeaponRenderer weapon={currentWeapon} />}

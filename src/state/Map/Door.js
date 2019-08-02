@@ -7,7 +7,7 @@ import { wallThickness } from './RoomNode'
 
 const DOOR_THICKNESS = wallThickness
 const CHECK_OPEN_RATE = 300
-const OPEN_DISTANCE = 7
+const OPEN_DISTANCE = 5
 const DOOR_OPEN_RATE = 0.008
 
 const DOOR_EDGE_TEXTURE = '/assets/textures/door_jamb_1_r.jpg'
