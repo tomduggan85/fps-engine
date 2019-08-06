@@ -5,6 +5,7 @@ import CameraRenderer from './CameraRenderer'
 import PlayerInputArea from './PlayerInputArea'
 import HUD from './HUD'
 import GameInfo from './GameInfo'
+import SplashScreen from './SplashScreen'
 
 @inject( 'gameState' )
 @observer
@@ -28,6 +29,7 @@ class GameRenderer extends React.Component {
     return (
       <>
         <div className='GameRenderer'>
+          <SplashScreen />
           <CameraRenderer camera={camera} />
           <PlayerInputArea camera={camera} player={player} />
           <HUD player={player} />
