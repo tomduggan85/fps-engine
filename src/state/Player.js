@@ -10,10 +10,9 @@ import { WeaponTypes, WeaponIds } from '../shared/enum/WeaponTypes'
 
 const FRICTION = 1
 const RESTITUTION = 0
-const SHOW_DEBUG_VOLUMES = true
+const SHOW_DEBUG_VOLUMES = false
 
 const HEIGHT = 2
-const CAMERA_HEIGHT = 0.25
 const RADIUS = 1.25
 const MASS = 3
 const MAX_VELOCITY = 12
@@ -48,16 +47,16 @@ class Player extends GameObject {
     
     this.addComponent( new Health({
       parent: this,
-      startingHealth: 100
+      startingHealth: 10//0
     }))
 
-    this.addWeapon( WeaponIds.Shotgun, 500 )
-    this.addWeapon( WeaponIds.MachineGun, 500 )
-    this.addWeapon( WeaponIds.RocketLauncher, 500 )
+    this.addWeapon( WeaponIds.Shotgun, 999 )
+    this.addWeapon( WeaponIds.MachineGun, 999 )
+    this.addWeapon( WeaponIds.RocketLauncher, 999 )
   }
 
   attachCamera() {
-    this.camera.sceneObject.position.set( 0, CAMERA_HEIGHT, 0 )
+    this.camera.player = this
     this.sceneObject.add(this.camera.sceneObject)
   }
 
@@ -115,7 +114,7 @@ class Player extends GameObject {
     this.stepMovement()
 
     if ( this.currentWeapon ) {
-      if ( this.isAttacking ) {
+      if ( this.isAttacking && !this.isDead ) {
         this.currentWeapon.attack()
       }
       this.currentWeapon.step( deltaTime )
@@ -126,6 +125,10 @@ class Player extends GameObject {
 
   @action
   stepMovement() {
+
+    if ( this.isDead ) {
+      return
+    }
     
     /* First, get vector representing intended movement from camera's current direction, in world coordinates */
     const impulseVector = this.camera.sceneObject.localToWorld(new THREE.Vector3(
@@ -181,6 +184,11 @@ class Player extends GameObject {
   @computed
   get currentWeapon() {
     return this.weapons[this.currentWeaponIndex]
+  }
+
+  @computed
+  get isDead() {
+    return this.components.health.isDead
   }
 }
 

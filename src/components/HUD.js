@@ -42,7 +42,11 @@ class HUD extends React.Component {
             <WeaponSlots player={this.props.player} />
           </div>
         </div>
-        <div className={classnames('overlay dead-overlay', { isActive: isDead })} />
+        <div className={classnames('overlay dead-overlay', { isActive: isDead })}>
+          <h1>You have been gobbled up.</h1>
+          { killCount } kills.<br/>
+          Click to respawn.
+        </div>
       </div>
     )
   }

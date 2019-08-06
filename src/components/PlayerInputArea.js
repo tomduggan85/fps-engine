@@ -1,11 +1,14 @@
 import React from 'react'
 import './PlayerInputArea.scss'
 import controls from '../shared/keyboardControls'
+import { observer } from 'mobx-react'
 
+@observer
 class PlayerInputArea extends React.Component {
 
   state = {
-    pointerLocked: false
+    pointerLocked: false,
+    respawning: false,
   }
  
   componentDidMount() {
@@ -78,6 +81,10 @@ class PlayerInputArea extends React.Component {
     const { pointerLocked } = this.state
     const { camera, player } = this.props
 
+    if ( player.isDead ) {
+      return
+    }
+
     switch( e.keyCode ) {
       case controls.attack:
         player.offAttack()
@@ -117,7 +124,10 @@ class PlayerInputArea extends React.Component {
   }
 
   onClick = () => {
-    if ( !this.state.pointerLocked ) {
+    if ( this.props.player.isDead ) {
+      this.respawnPlayer()
+    }
+    else if ( !this.state.pointerLocked ) {
       this.setState({ pointerLocked: true })
       this.$el.requestPointerLock()
     }
@@ -131,16 +141,26 @@ class PlayerInputArea extends React.Component {
     this.props.player.offAttack()
   }
 
+  respawnPlayer = () => {
+    if ( !this.state.respawning ) {
+      this.setState({ respawning: true })
+      window.location.reload() // TODO refresh game in place
+    }
+  }
+
   render() {
     const { pointerLocked } = this.state
+    const { isDead } = this.props.player
+    const mouseLookEnabled = pointerLocked && !isDead
+
     return (
       <div
         ref={ el => this.$el = el }
         className='PlayerInputArea'
-        onMouseMove={pointerLocked ? this.onMouseMove : undefined}
+        onMouseMove={mouseLookEnabled ? this.onMouseMove : undefined}
         onClick={this.onClick}
-        onMouseDown={pointerLocked ? this.onMouseAttack : undefined}
-        onMouseUp={pointerLocked ? this.offMouseAttack : undefined}
+        onMouseDown={mouseLookEnabled ? this.onMouseAttack : undefined}
+        onMouseUp={mouseLookEnabled ? this.offMouseAttack : undefined}
       />
     )
   }

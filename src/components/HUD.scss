@@ -133,7 +133,15 @@ $accent: lighten(#822015, 5%);
 
   .dead-overlay {
     background: rgba(#000, 0.8);
-    transition-duration: 0.8s;
+    transition-duration: 1.5s;
+    transition-delay: 0.5s;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    text-align: center;
+    flex-direction: column;
   }
 
   .bottom-ui {
