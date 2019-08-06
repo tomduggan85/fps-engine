@@ -1,0 +1,34 @@
+@keyframes SplashScreen-canvas-entry {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.SplashScreen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  pointer-events: none;
+  background: #000;
+
+  &.exiting {
+    background: transparent;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: SplashScreen-canvas-entry 1s steps(6) both;
+  }
+
+  img {
+    display: none;
+  }
+}

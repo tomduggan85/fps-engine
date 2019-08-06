@@ -43,9 +43,9 @@ class HUD extends React.Component {
           </div>
         </div>
         <div className={classnames('overlay dead-overlay', { isActive: isDead })}>
-          <h1>You have been gobbled up.</h1>
+          {Array(3).fill().map(() => <h1>You have been gobbled up</h1>)}
           { killCount } kills.<br/>
-          Click to respawn.
+          click to respawn.
         </div>
       </div>
     )

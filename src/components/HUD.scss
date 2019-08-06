@@ -142,6 +142,25 @@ $accent: lighten(#822015, 5%);
     font-size: 40px;
     text-align: center;
     flex-direction: column;
+
+    h1 {
+      position: absolute;
+      top: 30%;
+      letter-spacing: 4px;
+      color: #efefff;
+
+      &:nth-child(1) {
+        transform: translateX(-3px);
+        color: cyan;
+        filter: blur(1px);
+      }
+
+      &:nth-child(2) {
+        transform: translateX(3px);
+        color: red;
+        filter: blur(1px);
+      }
+    }
   }
 
   .bottom-ui {
