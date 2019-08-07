@@ -1,5 +1,6 @@
 import React from 'react'
 import './GameInfo.scss'
+import ControlsExplainer from './ControlsExplainer'
 
 class GameInfo extends React.Component {
 
@@ -14,13 +15,7 @@ class GameInfo extends React.Component {
   render() {
     return (
       <div className='game-info'>
-        <h3>Controls</h3>
-        <ul>
-          <li>W, S, A, D: Move</li>
-          <li>Shift: Attack</li>
-          <li>Click in game to enable mouse-look, then use escape key to disable mouse-look</li>
-          <li>When mouse look is enabled, click to attack</li>
-        </ul>
+        <ControlsExplainer />
 
         <h3>Credits - 2D, 3D, font assets</h3>
         <ul>

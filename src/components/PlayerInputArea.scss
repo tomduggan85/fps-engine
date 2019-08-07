@@ -1,7 +1,36 @@
+@keyframes input-controls-entry {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .PlayerInputArea {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  .ControlsExplainer {
+    color: #fff;
+    font-size: 40px;
+    background: rgba( #000, 0.5 );
+    padding: 20px;
+    animation: input-controls-entry 1s steps(6) 5s both;
+
+    ul {
+      margin: 0 0 10px;
+      padding: 0;
+      li {
+        padding: 0;
+      }
+    }
+  }
 }

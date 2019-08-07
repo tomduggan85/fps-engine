@@ -2,6 +2,7 @@ import React from 'react'
 import './PlayerInputArea.scss'
 import controls from '../shared/keyboardControls'
 import { observer } from 'mobx-react'
+import ControlsExplainer from './ControlsExplainer'
 
 @observer
 class PlayerInputArea extends React.Component {
@@ -9,6 +10,7 @@ class PlayerInputArea extends React.Component {
   state = {
     pointerLocked: false,
     respawning: false,
+    hasEnteredInput: false,
   }
  
   componentDidMount() {
@@ -26,6 +28,7 @@ class PlayerInputArea extends React.Component {
   onKeyDown = ( e ) => {
     const { pointerLocked } = this.state
     const { camera, player } = this.props
+    e.preventDefault()
     
     switch( e.keyCode ) {
       case controls.attack:
@@ -73,7 +76,11 @@ class PlayerInputArea extends React.Component {
         break
 
       default:
-        break
+        return
+    }
+
+    if ( !this.state.hasEnteredInput ) {
+      this.setState({ hasEnteredInput: true })
     }
   }
 
@@ -124,6 +131,10 @@ class PlayerInputArea extends React.Component {
   }
 
   onClick = () => {
+    if ( !this.state.hasEnteredInput ) {
+      this.setState({ hasEnteredInput: true })
+    }
+
     if ( this.props.player.isDead && this.props.player.readyToRespawn ) {
       this.respawnPlayer()
     }
@@ -149,7 +160,7 @@ class PlayerInputArea extends React.Component {
   }
 
   render() {
-    const { pointerLocked } = this.state
+    const { pointerLocked, hasEnteredInput } = this.state
     const { isDead } = this.props.player
     const mouseLookEnabled = pointerLocked && !isDead
 
@@ -161,7 +172,9 @@ class PlayerInputArea extends React.Component {
         onClick={this.onClick}
         onMouseDown={mouseLookEnabled ? this.onMouseAttack : undefined}
         onMouseUp={mouseLookEnabled ? this.offMouseAttack : undefined}
-      />
+      >
+        {!hasEnteredInput && <ControlsExplainer />}
+      </div>
     )
   }
 }
