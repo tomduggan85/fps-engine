@@ -15,8 +15,8 @@ class GameInfo extends React.Component {
   render() {
     return (
       <div className='game-info'>
+        <a className='contact' href='mailto:vomin888@gmail.com'>Contact</a>
         <ControlsExplainer />
-
         <h3>Credits - 2D, 3D, font assets</h3>
         <ul>
           <li><a href='https://opengameart.org/content/seamless-industrial-textures'>https://opengameart.org/content/seamless-industrial-textures</a></li>
