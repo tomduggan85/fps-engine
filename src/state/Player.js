@@ -53,7 +53,7 @@ class Player extends GameObject {
     
     this.addComponent( new Health({
       parent: this,
-      startingHealth: 1//00
+      startingHealth: 100
     }))
 
     this.addWeapon( WeaponIds.Shotgun, 999 )
