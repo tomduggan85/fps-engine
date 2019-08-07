@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import PlayerWeaponRenderer from './PlayerWeaponRenderer'
 import WeaponSlots from './WeaponSlots'
+import DeathOverlay from './DeathOverlay'
 
 @observer
 class HUD extends React.Component {
@@ -42,11 +43,7 @@ class HUD extends React.Component {
             <WeaponSlots player={this.props.player} />
           </div>
         </div>
-        <div className={classnames('overlay dead-overlay', { isActive: isDead })}>
-          {Array(3).fill().map(() => <h1>You have been gobbled up</h1>)}
-          { killCount } kills.<br/>
-          click to respawn.
-        </div>
+        {isDead && <DeathOverlay player={this.props.player} />}
       </div>
     )
   }

@@ -1,0 +1,57 @@
+@keyframes death-overlay-entry {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.DeathOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  background: rgba(#000, 0.8);
+
+  animation: death-overlay-entry 1s steps(6) 0.5s both;
+
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  text-align: center;
+  flex-direction: column;
+
+  h1 {
+    position: absolute;
+    top: 25%;
+    letter-spacing: 4px;
+    color: #efefff;
+
+    &:nth-child(1) {
+      transform: translateX(-3px);
+      color: cyan;
+      filter: blur(1px);
+    }
+
+    &:nth-child(2) {
+      transform: translateX(3px);
+      color: red;
+      filter: blur(1px);
+    }
+  }
+
+  .respawnLabel {
+    opacity: 0;
+    //transition: opacity 0.5s steps(5);
+  }
+
+  &.readyToRespawn .respawnLabel {
+    opacity: 1;
+  }
+}

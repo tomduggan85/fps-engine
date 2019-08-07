@@ -29,14 +29,24 @@ class Health {
       this.isTakingDamage = true
       this.takingDamageTimeout = setTimeout( this.finishTakingDamage, TAKING_DAMAGE_DURATION )
 
-      if ( this.parent.components.aiLogic ) {
-        if ( this.currentHealth > 0 ) {
+      if ( this.currentHealth > 0 ) {
+        if ( this.parent.components.aiLogic ) {
           this.parent.components.aiLogic.onTakeDamage()
         }
-        else {
-          this.parent.components.aiLogic.onDeath( damageAmount > EXPLODE_THRESHOLD )
-        }
       }
+      else {
+        this.onDeath( damageAmount )
+      }
+    }
+  }
+
+  onDeath( damageAmount ) {
+    if ( this.parent.onDeath ) {
+      this.parent.onDeath()
+    }
+
+    if ( this.parent.components.aiLogic ) {
+      this.parent.components.aiLogic.onDeath( damageAmount > EXPLODE_THRESHOLD )
     }
   }
 

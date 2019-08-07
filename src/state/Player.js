@@ -7,6 +7,7 @@ import { action, observable, computed } from 'mobx'
 import Health from './components/Health'
 import { disableRotation } from '../shared/physicsUtils'
 import { WeaponTypes, WeaponIds } from '../shared/enum/WeaponTypes'
+import ReactGA from 'react-ga'
 
 const FRICTION = 1
 const RESTITUTION = 0
@@ -17,6 +18,8 @@ const RADIUS = 1.25
 const MASS = 3
 const MAX_VELOCITY = 12
 const WALK_IMPULSE = 3
+
+const RESPAWN_DELAY = 2000
 
 class Player extends GameObject {
 
@@ -37,6 +40,9 @@ class Player extends GameObject {
   @observable
   killCount = 0
 
+  @observable
+  readyToRespawn = false
+
   constructor( props ) {
     super( props )
     
@@ -47,7 +53,7 @@ class Player extends GameObject {
     
     this.addComponent( new Health({
       parent: this,
-      startingHealth: 100
+      startingHealth: 1//00
     }))
 
     this.addWeapon( WeaponIds.Shotgun, 999 )
@@ -166,6 +172,18 @@ class Player extends GameObject {
         this.equipWeapon( 0 )
       }
     }
+  }
+
+  onDeath() {
+    ReactGA.event({
+      category: 'user',
+      action: 'game over',
+      value: this.killCount
+    })
+
+    setTimeout(() => {
+      this.readyToRespawn = true
+    }, RESPAWN_DELAY )
   }
 
   async equipWeapon( weaponIndex ) {

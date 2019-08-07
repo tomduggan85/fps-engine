@@ -131,38 +131,6 @@ $accent: lighten(#822015, 5%);
     transition-duration: 0.3s;
   }
 
-  .dead-overlay {
-    background: rgba(#000, 0.8);
-    transition-duration: 1.5s;
-    transition-delay: 0.5s;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 40px;
-    text-align: center;
-    flex-direction: column;
-
-    h1 {
-      position: absolute;
-      top: 30%;
-      letter-spacing: 4px;
-      color: #efefff;
-
-      &:nth-child(1) {
-        transform: translateX(-3px);
-        color: cyan;
-        filter: blur(1px);
-      }
-
-      &:nth-child(2) {
-        transform: translateX(3px);
-        color: red;
-        filter: blur(1px);
-      }
-    }
-  }
-
   .bottom-ui {
     background: url('/assets/images/hud_rust_4.jpg');
     background-size: 30%;

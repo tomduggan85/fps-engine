@@ -124,7 +124,7 @@ class PlayerInputArea extends React.Component {
   }
 
   onClick = () => {
-    if ( this.props.player.isDead ) {
+    if ( this.props.player.isDead && this.props.player.readyToRespawn ) {
       this.respawnPlayer()
     }
     else if ( !this.state.pointerLocked ) {
