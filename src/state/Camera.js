@@ -59,7 +59,13 @@ class Camera {
     this.renderer.setSize( screenWidth, screenHeight );
   }
 
+  onPlayerRespawn() {
+    this.sceneObject.position.y = CAMERA_HEIGHT
+    this.sceneObject.rotation.x = 0
+  }
+
   stepMovement( deltaTime ) {
+    
     const deltaTurnRate = deltaTime * TURN_RATE
     this.sceneObject.rotation.y += this.turningLeft ? deltaTurnRate : ( this.turningRight ? -deltaTurnRate : 0 )
   }

@@ -40,6 +40,10 @@ class Health {
     }
   }
 
+  setCurrentHealth( health ) {
+    this.currentHealth = health
+  }
+
   onDeath( damageAmount ) {
     if ( this.parent.onDeath ) {
       this.parent.onDeath()

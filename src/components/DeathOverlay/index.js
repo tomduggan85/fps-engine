@@ -9,10 +9,12 @@ class DeathOverlay extends React.Component {
   render() {
     const { killCount, readyToRespawn } = this.props.player
 
+    const killLabel = killCount === 1 ? `${ killCount } kill` : `${ killCount } kills`
+
     return (
       <div className={classnames( 'DeathOverlay', { readyToRespawn })}>
         {Array( 3 ).fill().map(( _, i ) => <h1 key={i}>You have been gobbled up</h1>)}
-        { killCount } kills.<br/>
+        { killLabel }<br/>
         <span className='respawnLabel'>click to respawn.</span>
       </div>  
     )

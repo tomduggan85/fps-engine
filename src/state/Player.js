@@ -19,6 +19,7 @@ const MASS = 3
 const MAX_VELOCITY = 12
 const WALK_IMPULSE = 3
 
+const STARTING_HEALTH = 100
 const RESPAWN_DELAY = 2000
 
 class Player extends GameObject {
@@ -53,17 +54,36 @@ class Player extends GameObject {
     
     this.addComponent( new Health({
       parent: this,
-      startingHealth: 100
+      startingHealth: STARTING_HEALTH
     }))
 
-    this.addWeapon( WeaponIds.Shotgun, 999 )
-    this.addWeapon( WeaponIds.MachineGun, 999 )
-    this.addWeapon( WeaponIds.RocketLauncher, 999 )
+    this.setupStartingWeapons()
   }
 
   attachCamera() {
     this.camera.player = this
     this.sceneObject.add(this.camera.sceneObject)
+  }
+
+  setupStartingWeapons() {
+    this.weapons = []
+    this.currentWeaponIndex = null
+    this.addWeapon( WeaponIds.Shotgun, 999 )
+    this.addWeapon( WeaponIds.MachineGun, 999 )
+    this.addWeapon( WeaponIds.RocketLauncher, 999 )
+  }
+
+  respawn() {
+    this.components.health.setCurrentHealth( STARTING_HEALTH )
+    this.killCount = 0
+    this.readyToRespawn = false
+    this.isGoingForward = false
+    this.isGoingBackwards = false
+    this.isStrafingLeft = false
+    this.isStrafingRight = false
+    this.isAttacking = false
+    
+    this.setupStartingWeapons()
   }
 
   createSceneObject() {

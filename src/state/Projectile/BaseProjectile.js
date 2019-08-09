@@ -46,7 +46,8 @@ class BaseProjectile extends GameObject {
     })
     const sprite = new THREE.Sprite( spriteMaterial )
 
-    sprite.scale.set( size * 2, size * 2 )
+    const spriteSize = this.props.spriteSize || size
+    sprite.scale.set( spriteSize * 2, spriteSize * 2 )
 
     const material = Physijs.createMaterial(
       new THREE.MeshNormalMaterial(),

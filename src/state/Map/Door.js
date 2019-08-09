@@ -93,6 +93,7 @@ class Door extends BoxScenery {
 
   remove() {
     clearInterval( this.__checkOpenTimeout )
+    super.remove()
   }
 }
 

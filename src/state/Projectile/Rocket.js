@@ -12,7 +12,8 @@ class Rocket extends BaseProjectile {
       ...props,
       textureUrl: '/assets/sprites/rocket.png',
       textureScale: [ 1/8, 1/2 ],
-      size: 1,
+      size: 0.5,
+      spriteSize: 1,
       mass: 15,
       speed: 50,
       animationDefs: {

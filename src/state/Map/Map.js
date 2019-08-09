@@ -6,6 +6,7 @@ import NoCeilingRoom from './NoCeilingRoom'
 import SmallRoom from './SmallRoom'
 import Hall from './Hall'
 import RoomTypes from '../../shared/enum/RoomTypes'
+import GameObjectTypes from '../../shared/enum/GameObjectTypes'
 
 const DESIRED_BRANCH_LENGTH = 5
 const FIRST_ROOM_WITH_ENEMIES = 3
@@ -28,7 +29,25 @@ class Map {
     this.nodesCreatedCount = 1
 
     this.onEnterNode( rootNode )
+  }
 
+  cleanOutEnemiesFromNode( node ) {
+    node.containedGameObjects = node.containedGameObjects.filter( gameObject => {
+      if ( gameObject.type === GameObjectTypes.Enemy ) {
+        gameObject.remove()
+        return false
+      }
+      return true
+    })
+  }
+
+  onPlayerRespawn() {
+    this.cleanOutEnemiesFromNode( this.currentlyOccupiedNode )
+    Object.keys( this.currentlyOccupiedNode.portals ).forEach( portalDirection => {
+      /* Clean out enemies from immediately adjacent nodes */
+      const portal = this.currentlyOccupiedNode.portals[ portalDirection ]
+      this.cleanOutEnemiesFromNode( portal.node )
+    })
   }
 
   randomPortalDirection( toAvoid = null ) {
@@ -105,7 +124,9 @@ class Map {
       }
       else if ( branchLength > DESIRED_BRANCH_LENGTH ) {
         // Remove all extra nodes
-        branch.slice( DESIRED_BRANCH_LENGTH ).forEach( node => node.remove() )
+        for ( let i = DESIRED_BRANCH_LENGTH; i < branchLength; i++ ) {
+          branch[i].remove()
+        }
       }
     })
   }

@@ -4,6 +4,7 @@ import Camera from './Camera'
 import Player from './Player'
 import Map from './Map/Map'
 import Skybox from './Skybox'
+import GameObjectTypes from '../shared/enum/GameObjectTypes'
 
 import { action, observable } from 'mobx'
 
@@ -45,6 +46,10 @@ class GameState {
     this.gameObjects.push( this.player )
   }
 
+  respawnPlayer() {
+    this.respawnRequested = true
+  }
+
   @action
   beginGame() {
     this.gameObjects = []
@@ -76,6 +81,18 @@ class GameState {
     cancelAnimationFrame(this._gameLoopRAF)
   }
 
+  finishPlayerRespawn() {
+    this.gameObjects.forEach( gameObject => {
+      if ( gameObject.type === GameObjectTypes.Projectile ) {
+        gameObject.remove()
+      }
+    })
+    this.map.onPlayerRespawn()
+    this.camera.onPlayerRespawn()
+    this.player.respawn()
+    this.respawnRequested = false
+  }
+
   @action
   stepGameLoop() {
     // calculate delta time
@@ -87,6 +104,10 @@ class GameState {
     this.map.step( deltaTime )
     this.scene.simulate()
     this.camera.step( deltaTime )
+
+    if ( this.respawnRequested ) {
+      this.finishPlayerRespawn()
+    }
 
     this.cleanupRemovedGameObjects()
 

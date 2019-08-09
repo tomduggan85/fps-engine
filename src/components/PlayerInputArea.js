@@ -1,15 +1,15 @@
 import React from 'react'
 import './PlayerInputArea.scss'
 import controls from '../shared/keyboardControls'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import ControlsExplainer from './ControlsExplainer'
 
+@inject( 'gameState' )
 @observer
 class PlayerInputArea extends React.Component {
 
   state = {
     pointerLocked: false,
-    respawning: false,
     hasEnteredInput: false,
   }
  
@@ -28,9 +28,9 @@ class PlayerInputArea extends React.Component {
   onKeyDown = ( e ) => {
     const { pointerLocked } = this.state
     const { camera, player } = this.props
-    e.preventDefault()
     
     switch( e.keyCode ) {
+
       case controls.attack:
         player.onAttack()
         break
@@ -74,6 +74,10 @@ class PlayerInputArea extends React.Component {
       case controls.equipWeapon6:
         player.equipWeapon( 5 )
         break
+
+      case 32: // Space bar, disable page scroll
+        e.preventDefault()
+        return
 
       default:
         return
@@ -136,7 +140,7 @@ class PlayerInputArea extends React.Component {
     }
 
     if ( this.props.player.isDead && this.props.player.readyToRespawn ) {
-      this.respawnPlayer()
+      this.props.gameState.respawnPlayer()
     }
     else if ( !this.state.pointerLocked ) {
       this.setState({ pointerLocked: true })
@@ -150,13 +154,6 @@ class PlayerInputArea extends React.Component {
 
   offMouseAttack = () => {
     this.props.player.offAttack()
-  }
-
-  respawnPlayer = () => {
-    if ( !this.state.respawning ) {
-      this.setState({ respawning: true })
-      window.location.reload() // TODO refresh game in place
-    }
   }
 
   render() {
